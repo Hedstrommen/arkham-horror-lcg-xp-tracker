@@ -81,7 +81,7 @@ function showOverview() {
 }
 
 function renderCampaignCard(campaign) {
-  const factionSymbol = renderClassIcon(campaign.investigatorFaction);
+
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive"}" data-campaign-id="${escapeHtml(campaign.id)}">
       <div class="title-row">
@@ -92,12 +92,9 @@ function renderCampaignCard(campaign) {
       </div>
       <div class="details-row">
         <span>${escapeHtml(campaign.campaignName)}</span>
-        <span class="faction-icon ${escapeHtml(campaign.investigatorFaction)}" title="${escapeHtml(campaign.investigatorFaction)}">
-          ${factionSymbol}
-        </span>
         <span class="investigator-with-icon">
-          ${renderClassIcon(campaign.investigatorFaction)}
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+          ${renderClassIcon(campaign.investigatorFaction)}
         </span>
         <span class="experience-total">${getTotalExperience(campaign)} XP</span>
       </div>
