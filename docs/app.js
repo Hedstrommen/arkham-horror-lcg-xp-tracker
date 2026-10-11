@@ -105,6 +105,7 @@ function renderCampaignCard(campaign) {
         <span>${escapeHtml(campaign.investigatorName)}</span>
         <span class="experience-total">${getTotalExperience(campaign)} XP</span>
       </div>
+      ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
       <div class="actions">
         ${campaign.isActive
           ? `<button class="arkham-button gain-experience-button">Gain XP</button>`
@@ -146,24 +147,19 @@ function showCreateCampaign() {
   const campaignOptions = arkhamCatalog.campaigns
     .map((campaign) => `<option value="${escapeHtml(campaign.campaignName)}">${escapeHtml(campaign.campaignName)}</option>`)
     .join("");
-  const investigatorOptions = arkhamCatalog.investigators
-    .map((investigator) =>
-      `<option value="${escapeHtml(investigator.investigatorId)}">
-        ${escapeHtml(investigator.investigatorName)} (${escapeHtml(investigator.factionName)})
-      </option>`)
-    .join("");
 
   appElement.innerHTML = `
     <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
     <form class="form-card" id="create-campaign-form">
       <h2>Create a new campaign</h2>
       <div class="form-field">
-        <label for="title">Title</label>
-        <input type="text" id="title" required maxlength="120">
-      </div>
-      <div class="form-field">
         <label for="campaignName">Campaign</label>
         <select id="campaignName" required>${campaignOptions}</select>
+        <button type="button" class="arkham-button subtle" id="add-custom-campaign-button">Add custom campaign</button>
+      </div>
+      <div class="form-field hidden" id="custom-campaign-field">
+        <label for="customCampaignName">Custom campaign name</label>
+        <input type="text" id="customCampaignName" maxlength="120" placeholder="Write your own campaign name">
       </div>
       <div class="form-field">
         <label for="friends">Friends you play with</label>
@@ -171,8 +167,18 @@ function showCreateCampaign() {
         <p class="form-hint">Separate multiple names with commas. Optional.</p>
       </div>
       <div class="form-field">
-        <label for="investigatorId">Your investigator</label>
-        <select id="investigatorId" required>${investigatorOptions}</select>
+        <label for="notes">Notes</label>
+        <textarea id="notes" placeholder="Optional notes about the campaign"></textarea>
+      </div>
+      <div class="form-field">
+        <label for="investigator-search">Your investigator</label>
+        <input type="text" id="investigator-search" placeholder="Search by name..." autocomplete="off">
+        <div class="faction-filter" id="faction-filter">
+          ${["all", "guardian", "seeker", "rogue", "mystic", "survivor"]
+            .map((faction) => `<button type="button" class="faction-filter-button ${faction === "all" ? "selected" : ""}" data-faction="${faction}">${faction === "all" ? "All" : FACTION_SYMBOLS[faction] + " " + faction}</button>`)
+            .join("")}
+        </div>
+        <select id="investigatorId" required size="6"></select>
       </div>
       <div class="actions">
         <button class="arkham-button" type="submit">Start campaign</button>
@@ -187,12 +193,54 @@ function showCreateCampaign() {
     event.preventDefault();
     handleCreateCampaign();
   });
+  document.getElementById("add-custom-campaign-button").addEventListener("click", () => {
+    const selectElement = document.getElementById("campaignName");
+    const customField = document.getElementById("custom-campaign-field");
+    selectElement.classList.add("hidden");
+    customField.classList.remove("hidden");
+    document.getElementById("add-custom-campaign-button").classList.add("hidden");
+  });
+
+  const searchInputElement = document.getElementById("investigator-search");
+  searchInputElement.addEventListener("input", () => renderInvestigatorOptions());
+  for (const filterButton of document.querySelectorAll(".faction-filter-button")) {
+    filterButton.addEventListener("click", () => {
+      for (const otherButton of document.querySelectorAll(".faction-filter-button")) {
+        otherButton.classList.remove("selected");
+      }
+      filterButton.classList.add("selected");
+      renderInvestigatorOptions();
+    });
+  }
+  renderInvestigatorOptions();
+}
+
+function renderInvestigatorOptions() {
+  const searchString = document.getElementById("investigator-search").value.trim().toLowerCase();
+  const selectedFaction = document.querySelector(".faction-filter-button.selected")?.dataset.faction ?? "all";
+  const investigatorSelect = document.getElementById("investigatorId");
+  const matchingInvestigators = arkhamCatalog.investigators.filter((investigator) => {
+    const matchesSearch = searchString.length === 0
+      || investigator.investigatorName.toLowerCase().includes(searchString);
+    const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
+    return matchesSearch && matchesFaction;
+  });
+  investigatorSelect.innerHTML = matchingInvestigators
+    .map((investigator) =>
+      `<option value="${escapeHtml(investigator.investigatorId)}">
+        ${FACTION_SYMBOLS[investigator.factionName] ?? ""} ${escapeHtml(investigator.investigatorName)} (${escapeHtml(investigator.factionName)})
+      </option>`)
+    .join("");
 }
 
 function handleCreateCampaign() {
-  const title = document.getElementById("title").value;
-  const campaignName = document.getElementById("campaignName").value;
+  const customField = document.getElementById("custom-campaign-field");
+  const isCustomCampaign = !customField.classList.contains("hidden");
+  const campaignName = isCustomCampaign
+    ? document.getElementById("customCampaignName").value
+    : document.getElementById("campaignName").value;
   const friendsInput = document.getElementById("friends").value;
+  const notes = document.getElementById("notes").value;
   const investigatorId = document.getElementById("investigatorId").value;
 
   try {
@@ -203,14 +251,17 @@ function handleCreateCampaign() {
     const investigator = arkhamCatalog.investigators.find(
       (candidate) => candidate.investigatorId === investigatorId
     );
+    if (investigator === undefined) {
+      throw new Error("Pick an investigator from the list.");
+    }
     const campaign = createCampaign(
       `campaign-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
-      title,
       campaignName,
       friends,
       investigatorId,
       investigator.investigatorName,
-      investigator.factionName
+      investigator.factionName,
+      notes
     );
     campaigns.push(campaign);
     persistCampaigns();
