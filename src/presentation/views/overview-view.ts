@@ -42,7 +42,18 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         <span class="experience-total">${campaign.totalExperience} XP</span>
       </div>
       ${campaign.isActive ? renderGainExperienceButton(campaign.campaignId) : ""}
+      ${renderStatusToggle(campaign)}
     </li>`;
+}
+
+function renderStatusToggle(campaign: CampaignOverview): string {
+  const statusChange = campaign.isActive ? "finish" : "reactivate";
+  const buttonLabel = campaign.isActive ? "Mark finished" : "Reactivate";
+  return `
+    <form method="post" action="/campaigns/${escapeHtml(campaign.campaignId)}/status">
+      <input type="hidden" name="statusChange" value="${statusChange}">
+      <button class="arkham-button subtle" type="submit">${buttonLabel}</button>
+    </form>`;
 }
 
 function renderGainExperienceButton(campaignId: string): string {

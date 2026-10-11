@@ -7,13 +7,28 @@ import { ArkhamCatalog } from "../../application/ports/arkham-catalog";
 import { renderOverviewPage } from "../views/overview-view";
 import { renderCreateCampaignPage } from "../views/create-campaign-view";
 import { renderGainExperiencePage } from "../views/gain-experience-view";
+import { ChangeCampaignStatusHandler } from "../../application/use-cases/change-campaign-status/change-campaign-status-handler";
+import { CampaignStatusChange } from "../../application/use-cases/change-campaign-status/change-campaign-status-command";
+
+const VALID_STATUS_CHANGES: CampaignStatusChange[] = ["finish", "reactivate"];
+
+function parseStatusChange(rawValue: unknown): CampaignStatusChange {
+  const value = String(rawValue ?? "");
+  if (!VALID_STATUS_CHANGES.includes(value as CampaignStatusChange)) {
+    throw new Error(
+      `Status change must be one of: ${VALID_STATUS_CHANGES.join(", ")}.`
+    );
+  }
+  return value as CampaignStatusChange;
+}
 
 export function createCampaignRoutes(
   listCampaignsHandler: ListCampaignsHandler,
   createCampaignHandler: CreateCampaignHandler,
   gainExperienceHandler: GainExperienceHandler,
   campaignRepository: CampaignRepository,
-  arkhamCatalog: ArkhamCatalog
+  arkhamCatalog: ArkhamCatalog,
+  changeCampaignStatusHandler: ChangeCampaignStatusHandler
 ): Router {
   const router = Router();
 
@@ -107,6 +122,21 @@ export function createCampaignRoutes(
           error instanceof Error ? error.message : String(error);
         response.status(400).send(renderGainExperiencePage(campaign, errorMessage));
       }
+    }
+  );
+
+  router.post(
+    "/campaigns/:campaignId/status",
+    (request: Request, response: Response) => {
+      try {
+        changeCampaignStatusHandler.handle({
+          campaignId: String(request.params.campaignId),
+          statusChange: parseStatusChange(request.body.statusChange),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+      response.redirect("/");
     }
   );
 

@@ -168,6 +168,12 @@ main {
   filter: brightness(1.15);
 }
 
+.arkham-button.subtle {
+  background: linear-gradient(180deg, #6b5b43, #4f4231);
+  font-size: 0.85rem;
+  padding: 0.35rem 0.8rem;
+}
+
 .new-campaign-bar {
   display: flex;
   justify-content: flex-end;

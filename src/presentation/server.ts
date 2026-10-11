@@ -20,7 +20,8 @@ app.use(
     container.createCampaignHandler,
     container.gainExperienceHandler,
     container.campaignRepository,
-    container.arkhamCatalog
+    container.arkhamCatalog,
+    container.changeCampaignStatusHandler
   )
 );
 
