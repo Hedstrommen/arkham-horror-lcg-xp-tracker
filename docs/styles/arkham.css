@@ -713,8 +713,37 @@ img.class-icon {
   gap: 0.35rem;
 }
 
+
+.campaign-view-info h2 {
+  margin: 0 0 0.5rem;
+}
+
+.detail-friends,
+.detail-notes {
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 0.35rem 0;
+}
+
+.detail-total-xp {
+  font-size: 1.3rem;
+}
+
+.detail-actions {
+  margin-top: 1rem;
+}
+
+.arkham-button.danger {
+  background: linear-gradient(180deg, #8c1f14, #5f140d);
+  border-color: #3f0d08;
+}
+
+.arkham-button.danger:hover {
+  filter: brightness(1.15);
+}
+
 .campaign-sigil {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   vertical-align: middle;
 }
