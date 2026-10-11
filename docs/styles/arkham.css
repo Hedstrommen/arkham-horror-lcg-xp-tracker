@@ -563,3 +563,33 @@ img.class-icon {
   width: 18px;
   height: 18px;
 }
+
+.experience-entry {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0.5rem 0.4rem;
+}
+
+.experience-entry:hover {
+  background: rgba(26, 92, 88, 0.10);
+}
+
+.experience-log-total {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.edit-entry-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(21, 16, 11, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.edit-entry-card {
+  margin: 0;
+  width: 100%;
+}
