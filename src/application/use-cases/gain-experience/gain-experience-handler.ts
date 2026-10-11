@@ -7,7 +7,10 @@ export class GainExperienceHandler {
   constructor(private readonly campaignRepository: CampaignRepository) {}
 
   public handle(command: GainExperienceCommand): void {
-    const campaign = this.campaignRepository.findById(command.campaignId);
+    const campaign = this.campaignRepository.findByIdAndOwnerId(
+      command.campaignId,
+      command.ownerId
+    );
     if (campaign === null) {
       throw new Error(`No campaign found with id ${command.campaignId}.`);
     }

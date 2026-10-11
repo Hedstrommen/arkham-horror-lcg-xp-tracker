@@ -2,6 +2,6 @@ import { Campaign } from "./campaign";
 
 export interface CampaignRepository {
   save(campaign: Campaign): void;
-  findById(campaignId: string): Campaign | null;
-  findAllOrderedByStatusThenRecency(): Campaign[];
+  findByIdAndOwnerId(campaignId: string, ownerId: string): Campaign | null;
+  findAllByOwnerIdOrderedByStatusThenRecency(ownerId: string): Campaign[];
 }

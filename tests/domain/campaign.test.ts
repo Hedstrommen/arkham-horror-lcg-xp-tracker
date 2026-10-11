@@ -7,6 +7,7 @@ import { ExperienceType } from "../../src/domain/value-objects/experience-type";
 function buildCampaign(): Campaign {
   return Campaign.startNew(
     "campaign-1",
+    "user-1",
     CampaignTitle.fromUserInput("Essex County Express run"),
     "The Dunwich Legacy",
     ["Sven", "Lisa"],

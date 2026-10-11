@@ -1,12 +1,14 @@
 import express from "express";
 import path from "node:path";
 import { buildDependencyContainer } from "./dependency-container";
-import { createCampaignRoutes } from "./routes/campaign-routes";
+import { createCampaignRoutes, createRequireSignedInUser } from "./routes/campaign-routes";
+import { createAuthRoutes } from "./routes/auth-routes";
 
 const DATABASE_FILE_PATH = path.join(process.cwd(), "data", "arkham-tracker.db");
 const PORT = Number(process.env.PORT ?? 3000);
 
 const container = buildDependencyContainer(DATABASE_FILE_PATH);
+const requireSignedInUser = createRequireSignedInUser(container.sessionStore);
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -15,13 +17,21 @@ app.use(
   express.static(path.join(__dirname, "presentation", "styles"))
 );
 app.use(
+  createAuthRoutes(
+    container.signUpHandler,
+    container.signInHandler,
+    container.sessionStore
+  )
+);
+app.use(
   createCampaignRoutes(
     container.listCampaignsHandler,
     container.createCampaignHandler,
     container.gainExperienceHandler,
     container.campaignRepository,
     container.arkhamCatalog,
-    container.changeCampaignStatusHandler
+    container.changeCampaignStatusHandler,
+    requireSignedInUser
   )
 );
 

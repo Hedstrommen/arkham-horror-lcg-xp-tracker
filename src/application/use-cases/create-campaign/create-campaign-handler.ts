@@ -30,6 +30,7 @@ export class CreateCampaignHandler {
 
     const campaign = Campaign.startNew(
       this.idGenerator.generateCampaignId(),
+      command.ownerId,
       title,
       campaignDefinition.campaignName,
       command.friends.filter((friend) => friend.trim().length > 0),

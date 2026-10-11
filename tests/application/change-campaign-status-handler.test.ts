@@ -18,21 +18,28 @@ class InMemoryCampaignRepository implements CampaignRepository {
     }
   }
 
-  findById(campaignId: string): Campaign | null {
+  findByIdAndOwnerId(campaignId: string, ownerId: string): Campaign | null {
     return (
-      this.storedCampaigns.find((campaign) => campaign.id === campaignId) ??
-      null
+      this.storedCampaigns.find(
+        (campaign) =>
+          campaign.id === campaignId && campaign.ownerId === ownerId
+      ) ?? null
     );
   }
 
-  findAllOrderedByStatusThenRecency(): Campaign[] {
-    return this.storedCampaigns;
+  findAllByOwnerIdOrderedByStatusThenRecency(ownerId: string): Campaign[] {
+    return this.storedCampaigns.filter(
+      (campaign) => campaign.ownerId === ownerId
+    );
   }
 }
+
+const OWNER_ID = "user-1";
 
 function buildCampaign(): Campaign {
   return Campaign.startNew(
     "campaign-1",
+    OWNER_ID,
     CampaignTitle.fromUserInput("Essex County Express run"),
     "The Dunwich Legacy",
     ["Sven"],
@@ -48,9 +55,15 @@ describe("ChangeCampaignStatusHandler", () => {
     repository.save(buildCampaign());
     const handler = new ChangeCampaignStatusHandler(repository);
 
-    handler.handle({ campaignId: "campaign-1", statusChange: "finish" });
+    handler.handle({
+      campaignId: "campaign-1",
+      ownerId: OWNER_ID,
+      statusChange: "finish",
+    });
 
-    expect(repository.findById("campaign-1")?.getIsActive()).toBe(false);
+    expect(
+      repository.findByIdAndOwnerId("campaign-1", OWNER_ID)?.getIsActive()
+    ).toBe(false);
   });
 
   it("reactivates a finished campaign", () => {
@@ -60,9 +73,29 @@ describe("ChangeCampaignStatusHandler", () => {
     repository.save(campaign);
     const handler = new ChangeCampaignStatusHandler(repository);
 
-    handler.handle({ campaignId: "campaign-1", statusChange: "reactivate" });
+    handler.handle({
+      campaignId: "campaign-1",
+      ownerId: OWNER_ID,
+      statusChange: "reactivate",
+    });
 
-    expect(repository.findById("campaign-1")?.getIsActive()).toBe(true);
+    expect(
+      repository.findByIdAndOwnerId("campaign-1", OWNER_ID)?.getIsActive()
+    ).toBe(true);
+  });
+
+  it("refuses to change a campaign owned by someone else", () => {
+    const repository = new InMemoryCampaignRepository();
+    repository.save(buildCampaign());
+    const handler = new ChangeCampaignStatusHandler(repository);
+
+    expect(() =>
+      handler.handle({
+        campaignId: "campaign-1",
+        ownerId: "intruder-1",
+        statusChange: "finish",
+      })
+    ).toThrow();
   });
 
   it("throws for an unknown status change", () => {
@@ -73,6 +106,7 @@ describe("ChangeCampaignStatusHandler", () => {
     expect(() =>
       handler.handle({
         campaignId: "campaign-1",
+        ownerId: OWNER_ID,
         statusChange: "pause" as never,
       })
     ).toThrow();
@@ -83,7 +117,11 @@ describe("ChangeCampaignStatusHandler", () => {
     const handler = new ChangeCampaignStatusHandler(repository);
 
     expect(() =>
-      handler.handle({ campaignId: "missing", statusChange: "finish" })
+      handler.handle({
+        campaignId: "missing",
+        ownerId: OWNER_ID,
+        statusChange: "finish",
+      })
     ).toThrow();
   });
 });

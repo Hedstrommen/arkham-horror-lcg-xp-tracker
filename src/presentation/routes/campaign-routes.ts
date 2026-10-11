@@ -4,11 +4,12 @@ import { GainExperienceHandler } from "../../application/use-cases/gain-experien
 import { ListCampaignsHandler } from "../../application/use-cases/list-campaigns/list-campaigns-handler";
 import { CampaignRepository } from "../../domain/campaign/campaign-repository";
 import { ArkhamCatalog } from "../../application/ports/arkham-catalog";
+import { ChangeCampaignStatusHandler } from "../../application/use-cases/change-campaign-status/change-campaign-status-handler";
+import { CampaignStatusChange } from "../../application/use-cases/change-campaign-status/change-campaign-status-command";
 import { renderOverviewPage } from "../views/overview-view";
 import { renderCreateCampaignPage } from "../views/create-campaign-view";
 import { renderGainExperiencePage } from "../views/gain-experience-view";
-import { ChangeCampaignStatusHandler } from "../../application/use-cases/change-campaign-status/change-campaign-status-handler";
-import { CampaignStatusChange } from "../../application/use-cases/change-campaign-status/change-campaign-status-command";
+import { getSessionId } from "../auth/current-user";
 
 const VALID_STATUS_CHANGES: CampaignStatusChange[] = ["finish", "reactivate"];
 
@@ -28,16 +29,28 @@ export function createCampaignRoutes(
   gainExperienceHandler: GainExperienceHandler,
   campaignRepository: CampaignRepository,
   arkhamCatalog: ArkhamCatalog,
-  changeCampaignStatusHandler: ChangeCampaignStatusHandler
+  changeCampaignStatusHandler: ChangeCampaignStatusHandler,
+  requireSignedInUser: (
+    request: Request,
+    response: Response
+  ) => string | null
 ): Router {
   const router = Router();
 
   router.get("/", (request: Request, response: Response) => {
-    const campaigns = listCampaignsHandler.handle();
+    const ownerId = requireSignedInUser(request, response);
+    if (ownerId === null) {
+      return;
+    }
+    const campaigns = listCampaignsHandler.handle(ownerId);
     response.send(renderOverviewPage(campaigns));
   });
 
   router.get("/campaigns/new", (request: Request, response: Response) => {
+    const ownerId = requireSignedInUser(request, response);
+    if (ownerId === null) {
+      return;
+    }
     response.send(
       renderCreateCampaignPage(
         arkhamCatalog.listCampaigns(),
@@ -49,6 +62,10 @@ export function createCampaignRoutes(
   });
 
   router.post("/campaigns", (request: Request, response: Response) => {
+    const ownerId = requireSignedInUser(request, response);
+    if (ownerId === null) {
+      return;
+    }
     const friendsInput = typeof request.body.friends === "string"
       ? request.body.friends
       : "";
@@ -60,7 +77,8 @@ export function createCampaignRoutes(
       .filter((friend: string) => friend.length > 0);
 
     try {
-      const campaignId = createCampaignHandler.handle({
+      createCampaignHandler.handle({
+        ownerId,
         title: String(request.body.title ?? ""),
         campaignName: String(request.body.campaignName ?? ""),
         friends,
@@ -83,8 +101,13 @@ export function createCampaignRoutes(
   router.get(
     "/campaigns/:campaignId/gain-experience",
     (request: Request, response: Response) => {
-      const campaign = campaignRepository.findById(
-        String(request.params.campaignId)
+      const ownerId = requireSignedInUser(request, response);
+      if (ownerId === null) {
+        return;
+      }
+      const campaign = campaignRepository.findByIdAndOwnerId(
+        String(request.params.campaignId),
+        ownerId
       );
       if (campaign === null) {
         response.status(404).send("Campaign not found.");
@@ -97,8 +120,13 @@ export function createCampaignRoutes(
   router.post(
     "/campaigns/:campaignId/gain-experience",
     (request: Request, response: Response) => {
-      const campaign = campaignRepository.findById(
-        String(request.params.campaignId)
+      const ownerId = requireSignedInUser(request, response);
+      if (ownerId === null) {
+        return;
+      }
+      const campaign = campaignRepository.findByIdAndOwnerId(
+        String(request.params.campaignId),
+        ownerId
       );
       if (campaign === null) {
         response.status(404).send("Campaign not found.");
@@ -112,6 +140,7 @@ export function createCampaignRoutes(
       try {
         gainExperienceHandler.handle({
           campaignId: campaign.id,
+          ownerId,
           experienceKind: String(request.body.experienceKind ?? ""),
           experienceAmount: Number(request.body.experienceAmount),
           notes: notesInput.length > 0 ? notesInput : null,
@@ -128,9 +157,14 @@ export function createCampaignRoutes(
   router.post(
     "/campaigns/:campaignId/status",
     (request: Request, response: Response) => {
+      const ownerId = requireSignedInUser(request, response);
+      if (ownerId === null) {
+        return;
+      }
       try {
         changeCampaignStatusHandler.handle({
           campaignId: String(request.params.campaignId),
+          ownerId,
           statusChange: parseStatusChange(request.body.statusChange),
         });
       } catch (error) {
@@ -141,4 +175,19 @@ export function createCampaignRoutes(
   );
 
   return router;
+}
+
+export function createRequireSignedInUser(
+  sessionStore: { findUserIdBySessionId(sessionId: string): string | null }
+): (request: Request, response: Response) => string | null {
+  return (request: Request, response: Response): string | null => {
+    const sessionId = getSessionId(request);
+    const userId =
+      sessionId === null ? null : sessionStore.findUserIdBySessionId(sessionId);
+    if (userId === null) {
+      response.redirect("/auth/sign-in");
+      return null;
+    }
+    return userId;
+  };
 }
