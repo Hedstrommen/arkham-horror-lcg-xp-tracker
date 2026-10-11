@@ -96,6 +96,14 @@ export class Campaign {
     return this.isActive;
   }
 
+  public markFinished(): void {
+    this.isActive = false;
+  }
+
+  public reactivate(): void {
+    this.isActive = true;
+  }
+
   private generateEntryId(): string {
     const highestEntryNumber = this.experienceLog.reduce((highest, entry) => {
       const entryNumber = Number(entry.id.split("-")[1]);
