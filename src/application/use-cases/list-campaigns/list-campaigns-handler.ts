@@ -4,9 +4,9 @@ import { CampaignOverview } from "./campaign-overview";
 export class ListCampaignsHandler {
   constructor(private readonly campaignRepository: CampaignRepository) {}
 
-  public handle(): CampaignOverview[] {
+  public handle(ownerId: string): CampaignOverview[] {
     return this.campaignRepository
-      .findAllOrderedByStatusThenRecency()
+      .findAllByOwnerIdOrderedByStatusThenRecency(ownerId)
       .map((campaign) => ({
         campaignId: campaign.id,
         title: campaign.title.toString(),
