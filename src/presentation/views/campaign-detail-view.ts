@@ -80,7 +80,6 @@ export function renderCampaignDetailPage(
 
   const experienceLog = campaign.getExperienceLog().length > 0
     ? `<h2>Experience log</h2>
-       <p class="experience-total experience-log-total">Total: ${campaign.getTotalExperience()} XP ${breakdownLine}</p>
        <ul class="experience-log">${experienceLogItems}</ul>`
     : "";
 
