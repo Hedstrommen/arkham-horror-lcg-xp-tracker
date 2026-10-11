@@ -38,7 +38,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
       <div class="details-row">
         <span>${escapeHtml(campaign.campaignName)}</span>
         ${factionIcon}
-        <span>${escapeHtml(campaign.investigatorName)}</span>
+        <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
         <span class="experience-total">${campaign.totalExperience} XP</span>
       </div>
       ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}

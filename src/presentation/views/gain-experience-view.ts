@@ -35,7 +35,7 @@ export function renderGainExperiencePage(
     <div class="campaign-context">
       <span>${escapeHtml(campaign.campaignName)}</span>
       ${factionIcon}
-      <span>${escapeHtml(campaign.investigatorName)}</span>
+      <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
       <span class="experience-total">${escapeHtml(campaign.title.toString())} - ${campaign.getTotalExperience()} XP</span>
     </div>
     ${errorBlock}

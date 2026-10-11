@@ -489,8 +489,19 @@ main {
   height: 28px;
 }
 
+
+.investigator-name {
+  font-weight: bold;
+}
+
+.investigator-name.guardian { color: #2c5d8c; }
+.investigator-name.seeker { color: #c4792b; }
+.investigator-name.rogue { color: #4d7d4a; }
+.investigator-name.mystic { color: #6f5ba1; }
+.investigator-name.survivor { color: #a63d22; }
+.investigator-name.neutral { color: #6e675c; }
+
 .faction-filter-button .class-icon {
-  width: 14px;
-  height: 14px;
-  vertical-align: -0.15em;
+  width: 16px;
+  height: 16px;
 }
