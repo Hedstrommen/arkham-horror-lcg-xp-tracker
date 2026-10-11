@@ -95,7 +95,10 @@ function renderCampaignCard(campaign) {
         <span class="faction-icon ${escapeHtml(campaign.investigatorFaction)}" title="${escapeHtml(campaign.investigatorFaction)}">
           ${factionSymbol}
         </span>
-        <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+        <span class="investigator-with-icon">
+          ${renderClassIcon(campaign.investigatorFaction)}
+          <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+        </span>
         <span class="experience-total">${getTotalExperience(campaign)} XP</span>
       </div>
       ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
@@ -295,10 +298,10 @@ function showGainExperience() {
     <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
     <div class="campaign-context">
       <span>${escapeHtml(campaign.campaignName)}</span>
-      <span class="faction-icon ${escapeHtml(campaign.investigatorFaction)}" title="${escapeHtml(campaign.investigatorFaction)}">
+      <span class="investigator-with-icon">
         ${renderClassIcon(campaign.investigatorFaction)}
+        <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
       </span>
-      <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
       <span class="experience-total">${escapeHtml(campaign.title)} — ${getTotalExperience(campaign)} XP</span>
     </div>
     <form class="form-card" id="gain-experience-form">
