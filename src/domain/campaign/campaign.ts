@@ -8,6 +8,7 @@ export class Campaign {
 
   private constructor(
     public readonly id: string,
+    public readonly ownerId: string,
     public readonly title: CampaignTitle,
     public readonly campaignName: string,
     public readonly friends: string[],
@@ -22,6 +23,7 @@ export class Campaign {
 
   public static startNew(
     id: string,
+    ownerId: string,
     title: CampaignTitle,
     campaignName: string,
     friends: string[],
@@ -31,6 +33,7 @@ export class Campaign {
   ): Campaign {
     return new Campaign(
       id,
+      ownerId,
       title,
       campaignName,
       friends,
@@ -44,6 +47,7 @@ export class Campaign {
 
   public static reconstitute(
     id: string,
+    ownerId: string,
     title: CampaignTitle,
     campaignName: string,
     friends: string[],
@@ -55,6 +59,7 @@ export class Campaign {
   ): Campaign {
     return new Campaign(
       id,
+      ownerId,
       title,
       campaignName,
       friends,
