@@ -1,0 +1,29 @@
+{
+  "name": "arkham-horror-lcg-xp-tracker",
+  "version": "0.1.0",
+  "description": "Tracks investigator experience across Arkham Horror LCG campaigns.",
+  "main": "dist/presentation/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/presentation/server.js",
+    "test": "vitest run",
+    "dev": "tsc && node dist/presentation/server.js"
+  },
+  "keywords": [
+    "arkham-horror",
+    "lcg",
+    "xp-tracker"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^12.6.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
