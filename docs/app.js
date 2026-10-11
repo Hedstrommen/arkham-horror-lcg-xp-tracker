@@ -7,6 +7,32 @@ let arkhamCatalog = { campaigns: [], investigators: [] };
 let selectedCampaignId = null;
 let selectedInvestigatorId = null;
 
+let selectedChapters = [1];
+
+function isChapterSelected(chapter) {
+  return document.getElementById(`chapter-${chapter}-checkbox`).checked;
+}
+
+function refreshChapterSelection() {
+  selectedChapters = [1, 2].filter(isChapterSelected);
+  if (selectedChapters.length === 0) {
+    selectedChapters = [1];
+  }
+  renderCampaignOptions();
+  renderInvestigatorOptions();
+}
+
+function renderCampaignOptions() {
+  const campaignSelect = document.getElementById("campaignName");
+  const matchingCampaigns = arkhamCatalog.campaigns.filter(
+    (campaign) => selectedChapters.includes(campaign.chapter ?? 1)
+  );
+  campaignSelect.innerHTML = matchingCampaigns
+    .map((campaign) => `<option value="${escapeHtml(campaign.campaignName)}">${escapeHtml(campaign.campaignName)}</option>`)
+    .join("");
+}
+
+
 document.addEventListener("DOMContentLoaded", startApp);
 
 async function startApp() {

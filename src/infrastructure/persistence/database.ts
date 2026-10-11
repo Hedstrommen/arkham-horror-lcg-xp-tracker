@@ -15,6 +15,7 @@ const CREATE_CAMPAIGNS_TABLE = `
     title TEXT NOT NULL,
     notes TEXT,
     campaign_name TEXT NOT NULL,
+    chapter INTEGER NOT NULL DEFAULT 1,
     friends TEXT NOT NULL,
     investigator_id TEXT NOT NULL,
     investigator_name TEXT NOT NULL,

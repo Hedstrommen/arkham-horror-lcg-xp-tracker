@@ -14,6 +14,7 @@ export class CreateCampaignHandler {
 
   public handle(command: CreateCampaignCommand): string {
     const title = CampaignTitle.fromUserInput(command.campaignName);
+    const chapter = command.chapter === 2 ? 2 : 1;
 
     const investigatorDefinition =
       this.arkhamCatalog.findInvestigatorById(command.investigatorId);
@@ -26,6 +27,7 @@ export class CreateCampaignHandler {
       command.ownerId,
       title,
       title.toString(),
+      chapter,
       command.friends.filter((friend) => friend.trim().length > 0),
       investigatorDefinition.investigatorId,
       investigatorDefinition.investigatorName,

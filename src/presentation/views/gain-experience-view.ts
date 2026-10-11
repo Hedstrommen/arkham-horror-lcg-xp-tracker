@@ -64,7 +64,7 @@ export function renderGainExperiencePage(
   const content = `
     <a class="back-link" href="/">&larr; Back to campaigns</a>
     <div class="campaign-context">
-      <span>${escapeHtml(campaign.campaignName)}</span>
+      <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter}</span></span>
       <span class="investigator-with-icon">
         ${factionIcon}
         <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>

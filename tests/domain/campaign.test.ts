@@ -10,6 +10,7 @@ function buildCampaign(): Campaign {
     "user-1",
     CampaignTitle.fromUserInput("Essex County Express run"),
     "The Dunwich Legacy",
+    1,
     ["Sven", "Lisa"],
     "01005",
     "Roland Banks",

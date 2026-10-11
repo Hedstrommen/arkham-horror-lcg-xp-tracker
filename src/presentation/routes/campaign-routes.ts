@@ -80,9 +80,11 @@ export function createCampaignRoutes(
       .filter((friend: string) => friend.length > 0);
 
     try {
+      const chapterNumber = Number(request.body.chapter);
       createCampaignHandler.handle({
         ownerId,
         campaignName: String(request.body.campaignName ?? ""),
+        chapter: chapterNumber === 2 ? 2 : 1,
         friends,
         investigatorId: String(request.body.investigatorId ?? ""),
         notes: notesInput.length > 0 ? notesInput : null,

@@ -33,7 +33,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         ${statusBadge}
       </div>
       <div class="details-row">
-        <span>${escapeHtml(campaign.campaignName)}</span>
+        <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter}</span></span>
         <span class="investigator-with-icon">
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
           ${renderFactionIcon(campaign.investigatorFaction)}

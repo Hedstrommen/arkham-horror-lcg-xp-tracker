@@ -1,11 +1,13 @@
 export interface CampaignDefinition {
   campaignName: string;
+  chapter: number;
 }
 
 export interface InvestigatorDefinition {
   investigatorId: string;
   investigatorName: string;
   factionName: string;
+  chapter: number;
 }
 
 export interface ArkhamCatalog {
