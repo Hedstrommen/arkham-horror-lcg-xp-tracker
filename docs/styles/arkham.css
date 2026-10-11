@@ -1,4 +1,7 @@
 :root {
+  --night: #15100b;
+  --night-soft: #241b12;
+  --gold-deep: #8a6a2a;
   --parchment: #efe3c8;
   --parchment-dark: #d9c69a;
   --ink: #221a12;
@@ -22,36 +25,57 @@
 body {
   margin: 0;
   background: var(--parchment);
-  background-image: radial-gradient(
-      ellipse at top left,
-      rgba(176, 141, 63, 0.15),
-      transparent 55%
-    ),
-    radial-gradient(ellipse at bottom right, rgba(140, 31, 20, 0.12), transparent 55%);
+  background-image:
+    radial-gradient(ellipse at top left, rgba(176, 141, 63, 0.15), transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(140, 31, 20, 0.12), transparent 55%),
+    radial-gradient(ellipse at 50% 0%, rgba(21, 16, 11, 0.14), transparent 65%);
   color: var(--ink);
   font-family: "Palatino Linotype", Palatino, Georgia, serif;
 }
 
 .page-header {
   text-align: center;
-  padding: 2rem 1rem 1rem;
-  border-bottom: 3px double var(--gold);
-  background: linear-gradient(180deg, rgba(34, 26, 18, 0.92), rgba(34, 26, 18, 0.85));
+  padding: 2.5rem 1rem 1.75rem;
+  border-bottom: 3px double var(--gold-deep);
+  background:
+    radial-gradient(ellipse at 50% 120%, rgba(138, 106, 42, 0.25), transparent 60%),
+    radial-gradient(ellipse at 15% -20%, rgba(60, 40, 20, 0.6), transparent 55%),
+    linear-gradient(180deg, var(--night), var(--night-soft));
   color: var(--parchment);
 }
 
 .page-header h1 {
   margin: 0;
-  font-size: 2rem;
-  letter-spacing: 0.12em;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--gold-bright);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.9),
+    0 2px 6px rgba(0, 0, 0, 0.7),
+    0 0 24px rgba(212, 181, 106, 0.25);
+  background: linear-gradient(180deg, #e9d8a8 15%, var(--gold-bright) 55%, #96702c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.page-header .title-subtitle {
+  display: block;
+  margin-top: 0.55rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--parchment-dark);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .page-header p {
-  margin: 0.4rem 0 0;
+  margin: 0.9rem 0 0;
   font-style: italic;
   color: var(--parchment-dark);
+  opacity: 0.85;
 }
 
 main {
