@@ -11,6 +11,7 @@ export class ListCampaignsHandler {
         campaignId: campaign.id,
         title: campaign.title.toString(),
         campaignName: campaign.campaignName,
+        chapter: campaign.chapter,
         investigatorName: campaign.investigatorName,
         investigatorFaction: campaign.investigatorFaction,
         totalExperience: campaign.getTotalExperience(),

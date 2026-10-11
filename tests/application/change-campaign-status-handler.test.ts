@@ -42,6 +42,7 @@ function buildCampaign(): Campaign {
     OWNER_ID,
     CampaignTitle.fromUserInput("Essex County Express run"),
     "The Dunwich Legacy",
+    1,
     ["Sven"],
     "01005",
     "Roland Banks",

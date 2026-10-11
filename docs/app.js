@@ -7,6 +7,32 @@ let arkhamCatalog = { campaigns: [], investigators: [] };
 let selectedCampaignId = null;
 let selectedInvestigatorId = null;
 
+let selectedChapters = [1];
+
+function isChapterSelected(chapter) {
+  return document.getElementById(`chapter-${chapter}-checkbox`).checked;
+}
+
+function refreshChapterSelection() {
+  selectedChapters = [1, 2].filter(isChapterSelected);
+  if (selectedChapters.length === 0) {
+    selectedChapters = [1];
+  }
+  renderCampaignOptions();
+  renderInvestigatorOptions();
+}
+
+function renderCampaignOptions() {
+  const campaignSelect = document.getElementById("campaignName");
+  const matchingCampaigns = arkhamCatalog.campaigns.filter(
+    (campaign) => selectedChapters.includes(campaign.chapter ?? 1)
+  );
+  campaignSelect.innerHTML = matchingCampaigns
+    .map((campaign) => `<option value="${escapeHtml(campaign.campaignName)}">${escapeHtml(campaign.campaignName)}</option>`)
+    .join("");
+}
+
+
 document.addEventListener("DOMContentLoaded", startApp);
 
 async function startApp() {
@@ -92,7 +118,7 @@ function renderCampaignCard(campaign) {
         </span>
       </div>
       <div class="details-row">
-        <span>${escapeHtml(campaign.campaignName)}</span>
+        <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span></span>
         <span class="investigator-with-icon">
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
           ${renderClassIcon(campaign.investigatorFaction)}
@@ -138,14 +164,16 @@ function bindCampaignCardEvents(campaign) {
 
 function showCreateCampaign() {
   const appElement = document.getElementById("app");
-  const campaignOptions = arkhamCatalog.campaigns
-    .map((campaign) => `<option value="${escapeHtml(campaign.campaignName)}">${escapeHtml(campaign.campaignName)}</option>`)
-    .join("");
 
   appElement.innerHTML = `
     <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
     <form class="form-card" id="create-campaign-form">
       <h2>Create a new campaign</h2>
+      <div class="form-field chapter-select">
+        <span class="chapter-label">Chapter:</span>
+        <label class="chapter-checkbox"><input type="checkbox" id="chapter-1-checkbox" checked> Chapter 1</label>
+        <label class="chapter-checkbox"><input type="checkbox" id="chapter-2-checkbox"> Chapter 2</label>
+      </div>
       <div class="form-field">
         <label for="campaignName">Campaign
           <span class="custom-campaign-toggle">
@@ -153,7 +181,7 @@ function showCreateCampaign() {
             <label for="custom-campaign-checkbox" class="custom-campaign-label">Custom</label>
           </span>
         </label>
-        <select id="campaignName" required>${campaignOptions}</select>
+        <select id="campaignName" required></select>
         <input type="text" id="customCampaignName" class="hidden" maxlength="120" placeholder="Write your own campaign name">
       </div>
       <div class="form-field hidden" id="custom-campaign-field">
@@ -219,6 +247,13 @@ function showCreateCampaign() {
     });
   }
   selectedInvestigatorId = null;
+  selectedChapters = [1, 2].filter(isChapterSelected);
+  if (selectedChapters.length === 0) {
+    selectedChapters = [1];
+  }
+  document.getElementById("chapter-1-checkbox").addEventListener("change", refreshChapterSelection);
+  document.getElementById("chapter-2-checkbox").addEventListener("change", refreshChapterSelection);
+  renderCampaignOptions();
   renderInvestigatorOptions();
 }
 
@@ -230,7 +265,8 @@ function renderInvestigatorOptions() {
     const matchesSearch = searchString.length === 0
       || investigator.investigatorName.toLowerCase().includes(searchString);
     const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
-    return matchesSearch && matchesFaction;
+    const matchesChapter = selectedChapters.includes(investigator.chapter ?? 1);
+    return matchesSearch && matchesFaction && matchesChapter;
   });
   pickListElement.innerHTML = matchingInvestigators
     .map((investigator) => `
@@ -282,6 +318,7 @@ function handleCreateCampaign() {
       investigator.factionName,
       notes
     );
+    campaign.chapter = selectedChapters.includes(1) ? 1 : 2;
     campaigns.push(campaign);
     persistCampaigns();
     showOverview();
@@ -310,7 +347,7 @@ function showGainExperience() {
   appElement.innerHTML = `
     <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
     <div class="campaign-context">
-      <span>${escapeHtml(campaign.campaignName)}</span>
+      <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span></span>
       <span class="investigator-with-icon">
         ${renderClassIcon(campaign.investigatorFaction)}
         <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>

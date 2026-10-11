@@ -42,6 +42,7 @@ function buildCampaign(): Campaign {
     OWNER_ID,
     CampaignTitle.fromUserInput("Blood on the Altar"),
     "The Dunwich Legacy",
+    1,
     [],
     "01005",
     "Roland Banks",
