@@ -7,25 +7,30 @@ let arkhamCatalog = { campaigns: [], investigators: [] };
 let selectedCampaignId = null;
 let selectedInvestigatorId = null;
 
-let selectedChapters = [1];
+let selectedCampaignChapters = [1];
+let selectedInvestigatorChapters = [1];
 
-function isChapterSelected(chapter) {
-  return document.getElementById(`chapter-${chapter}-checkbox`).checked;
+function checkedChapters(prefix) {
+  const chapters = [1, 2].filter(
+    (chapter) => document.getElementById(`${prefix}-chapter-${chapter}-checkbox`).checked
+  );
+  return chapters.length > 0 ? chapters : [1];
 }
 
-function refreshChapterSelection() {
-  selectedChapters = [1, 2].filter(isChapterSelected);
-  if (selectedChapters.length === 0) {
-    selectedChapters = [1];
-  }
+function refreshCampaignChapterSelection() {
+  selectedCampaignChapters = checkedChapters("campaign");
   renderCampaignOptions();
+}
+
+function refreshInvestigatorChapterSelection() {
+  selectedInvestigatorChapters = checkedChapters("investigator");
   renderInvestigatorOptions();
 }
 
 function renderCampaignOptions() {
   const campaignSelect = document.getElementById("campaignName");
   const matchingCampaigns = arkhamCatalog.campaigns.filter(
-    (campaign) => selectedChapters.includes(campaign.chapter ?? 1)
+    (campaign) => selectedCampaignChapters.includes(campaign.chapter ?? 1)
   );
   campaignSelect.innerHTML = matchingCampaigns
     .map((campaign) => `<option value="${escapeHtml(campaign.campaignName)}">${escapeHtml(campaign.campaignName)}</option>`)
@@ -170,9 +175,9 @@ function showCreateCampaign() {
     <form class="form-card" id="create-campaign-form">
       <h2>Create a new campaign</h2>
       <div class="form-field chapter-select">
-        <span class="chapter-label">Chapter:</span>
-        <label class="chapter-checkbox"><input type="checkbox" id="chapter-1-checkbox" checked> Chapter 1</label>
-        <label class="chapter-checkbox"><input type="checkbox" id="chapter-2-checkbox"> Chapter 2</label>
+        <span class="chapter-label">Campaign chapter:</span>
+        <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-1-checkbox" checked> Chapter 1</label>
+        <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-2-checkbox"> Chapter 2</label>
       </div>
       <div class="form-field">
         <label for="campaignName">Campaign
@@ -199,6 +204,11 @@ function showCreateCampaign() {
       </div>
       <div class="form-field">
         <label for="investigator-search">Your investigator</label>
+        <div class="chapter-select">
+          <span class="chapter-label">Investigator chapter:</span>
+          <label class="chapter-checkbox"><input type="checkbox" id="investigator-chapter-1-checkbox" checked> Chapter 1</label>
+          <label class="chapter-checkbox"><input type="checkbox" id="investigator-chapter-2-checkbox"> Chapter 2</label>
+        </div>
         <input type="text" id="investigator-search" placeholder="Search by name..." autocomplete="off">
         <div class="faction-filter" id="faction-filter">
           ${["all", "guardian", "seeker", "rogue", "mystic", "survivor"]
@@ -247,12 +257,12 @@ function showCreateCampaign() {
     });
   }
   selectedInvestigatorId = null;
-  selectedChapters = [1, 2].filter(isChapterSelected);
-  if (selectedChapters.length === 0) {
-    selectedChapters = [1];
-  }
-  document.getElementById("chapter-1-checkbox").addEventListener("change", refreshChapterSelection);
-  document.getElementById("chapter-2-checkbox").addEventListener("change", refreshChapterSelection);
+  selectedCampaignChapters = checkedChapters("campaign");
+  selectedInvestigatorChapters = checkedChapters("investigator");
+  document.getElementById("campaign-chapter-1-checkbox").addEventListener("change", refreshCampaignChapterSelection);
+  document.getElementById("campaign-chapter-2-checkbox").addEventListener("change", refreshCampaignChapterSelection);
+  document.getElementById("investigator-chapter-1-checkbox").addEventListener("change", refreshInvestigatorChapterSelection);
+  document.getElementById("investigator-chapter-2-checkbox").addEventListener("change", refreshInvestigatorChapterSelection);
   renderCampaignOptions();
   renderInvestigatorOptions();
 }
@@ -265,7 +275,7 @@ function renderInvestigatorOptions() {
     const matchesSearch = searchString.length === 0
       || investigator.investigatorName.toLowerCase().includes(searchString);
     const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
-    const matchesChapter = selectedChapters.includes(investigator.chapter ?? 1);
+    const matchesChapter = selectedInvestigatorChapters.includes(investigator.chapter ?? 1);
     return matchesSearch && matchesFaction && matchesChapter;
   });
   pickListElement.innerHTML = matchingInvestigators
@@ -318,7 +328,7 @@ function handleCreateCampaign() {
       investigator.factionName,
       notes
     );
-    campaign.chapter = selectedChapters.includes(1) ? 1 : 2;
+    campaign.chapter = selectedCampaignChapters.includes(2) && !selectedCampaignChapters.includes(1) ? 2 : (selectedCampaignChapters.includes(1) ? 1 : 2);
     campaigns.push(campaign);
     persistCampaigns();
     showOverview();
