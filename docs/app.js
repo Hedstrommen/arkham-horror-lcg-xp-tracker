@@ -124,7 +124,7 @@ function renderCampaignCard(campaign) {
         </span>
       </div>
       <div class="details-row">
-        <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span></span>
+        <span class="campaign-name-with-sigil">${escapeHtml(campaign.campaignName)} ${renderCampaignSigil(campaign.campaignName)}</span>
         <span class="investigator-with-icon">
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
           ${renderClassIcon(campaign.investigatorFaction)}
@@ -134,9 +134,7 @@ function renderCampaignCard(campaign) {
       </div>
       ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
       <div class="actions">
-        ${campaign.isActive
-          ? `<button class="arkham-button gain-experience-button">Gain XP</button>`
-          : ""}
+        <button class="arkham-button view-campaign-button">View campaign</button>
         <button class="arkham-button subtle status-toggle-button">
           ${campaign.isActive ? "Mark finished" : "Reactivate"}
         </button>
@@ -155,13 +153,12 @@ function bindCampaignCardEvents(campaign) {
     selectedCampaignId = campaign.id;
     showCampaignDetail();
   });
-  const gainButton = cardElement.querySelector(".gain-experience-button");
-  if (gainButton !== null) {
-    gainButton.addEventListener("click", (event) => {
+  const viewButton = cardElement.querySelector(".view-campaign-button");
+  if (viewButton !== null) {
+    viewButton.addEventListener("click", (event) => {
       event.stopPropagation();
       selectedCampaignId = campaign.id;
-      gainPageReturnTarget = "overview";
-      showGainExperience();
+      showCampaignDetail();
     });
   }
   cardElement.querySelector(".status-toggle-button").addEventListener("click", (event) => {

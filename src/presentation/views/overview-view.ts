@@ -2,6 +2,7 @@ import { CampaignOverview } from "../../application/use-cases/list-campaigns/cam
 import { InvestigatorFactionName } from "../../domain/value-objects/investigator-faction";
 import { escapeHtml, renderLayout } from "./layout";
 import { renderFactionIcon } from "./faction-icon";
+import { renderCampaignSigil } from "./campaign-sigil";
 
 export function renderOverviewPage(campaigns: CampaignOverview[]): string {
   const campaignCards = campaigns.map(renderCampaignCard).join("\n");
@@ -33,7 +34,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         ${statusBadge}
       </div>
       <div class="details-row">
-        <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter}</span></span>
+        <span class="campaign-name-with-sigil">${escapeHtml(campaign.campaignName)} ${renderCampaignSigil(campaign.campaignName)}</span>
         <span class="investigator-with-icon">
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
           ${renderFactionIcon(campaign.investigatorFaction)}
@@ -43,7 +44,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
       </div>
       ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
       <div class="actions">
-        ${campaign.isActive ? renderGainExperienceButton(campaign.campaignId) : ""}
+        <a class="arkham-button" href="/campaigns/${escapeHtml(campaign.campaignId)}">View campaign</a>
         ${renderStatusToggle(campaign)}
       </div>
     </li>`;
@@ -59,9 +60,3 @@ function renderStatusToggle(campaign: CampaignOverview): string {
     </form>`;
 }
 
-function renderGainExperienceButton(campaignId: string): string {
-  return `
-    <div class="actions">
-      <a class="arkham-button" href="/campaigns/${escapeHtml(campaignId)}/gain-experience">Gain XP</a>
-    </div>`;
-}
