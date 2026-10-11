@@ -247,7 +247,7 @@ function showCampaignDetail(editMode = false) {
     <div class="form-card campaign-detail-card">
       ${infoSection}
     </div>
-    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP ${renderExperienceBreakdown(campaign)}</p><ul class="experience-log">${logItems}</ul>` : ""}`;
+    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><ul class="experience-log">${logItems}</ul>` : ""}`;
 
   document.getElementById("back-to-overview-link").addEventListener("click", (event) => {
     event.preventDefault();
@@ -540,7 +540,7 @@ function showGainExperience() {
         <button class="arkham-button" type="submit">Record experience</button>
       </div>
     </form>
-    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP ${renderExperienceBreakdown(campaign)}</p><ul class="experience-log">${logItems}</ul>` : ""}`;
+    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><ul class="experience-log">${logItems}</ul>` : ""}`;
 
   document.getElementById("back-to-overview-link").addEventListener("click", (event) => {
     event.preventDefault();
