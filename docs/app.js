@@ -176,7 +176,8 @@ function showCreateCampaign() {
             .map((faction) => `<button type="button" class="faction-filter-button ${faction === "all" ? "selected" : ""}" data-faction="${faction}">${faction === "all" ? "All" : renderClassIcon(faction) + " " + faction}</button>`)
             .join("")}
         </div>
-        <select id="investigatorId" required size="6"></select>
+        <div class="investigator-pick-list" id="investigator-pick-list" role="listbox"></div>
+        <input type="hidden" id="investigatorId" name="investigatorId">
       </div>
       <div class="actions">
         <button class="arkham-button" type="submit">Start campaign</button>
@@ -216,8 +217,11 @@ function showCreateCampaign() {
       renderInvestigatorOptions();
     });
   }
+  selectedInvestigatorId = null;
   renderInvestigatorOptions();
 }
+
+let selectedInvestigatorId = null;
 
 function renderInvestigatorOptions() {
   const searchString = document.getElementById("investigator-search").value.trim().toLowerCase();
@@ -230,11 +234,7 @@ function renderInvestigatorOptions() {
     return matchesSearch && matchesFaction;
   });
   investigatorSelect.innerHTML = matchingInvestigators
-    .map((investigator) =>
-      `<option value="${escapeHtml(investigator.investigatorId)}" class="faction-${escapeHtml(investigator.factionName)}">
-        ${escapeHtml(investigator.investigatorName)}
-      </option>`)
-    .join("");
+
 }
 
 function handleCreateCampaign() {

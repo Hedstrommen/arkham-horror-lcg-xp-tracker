@@ -522,3 +522,44 @@ img.class-icon {
   height: 15px;
   vertical-align: -2px;
 }
+
+.investigator-pick-list {
+  max-height: 12rem;
+  overflow-y: auto;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  background: #fdf6e3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.35rem;
+}
+
+.investigator-pick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.investigator-pick:hover {
+  background: rgba(26, 92, 88, 0.12);
+}
+
+.investigator-pick.selected {
+  background: rgba(26, 92, 88, 0.22);
+  outline: 2px solid var(--teal);
+}
+
+.investigator-pick .class-icon {
+  width: 18px;
+  height: 18px;
+}
