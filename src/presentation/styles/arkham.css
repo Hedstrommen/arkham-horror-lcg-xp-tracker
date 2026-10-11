@@ -661,3 +661,42 @@ img.class-icon {
   vertical-align: middle;
   white-space: nowrap;
 }
+
+.details-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.total-xp-cell {
+  margin-left: auto;
+}
+
+.detail-info-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  padding: 0.4rem 0.9rem;
+  background: linear-gradient(180deg, #2e7d78, #1a5c58 60%, #0f3d3e);
+  color: #f0ead8;
+  font-weight: bold;
+  text-decoration: none;
+  border: 1px solid #0c2f30;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(21, 16, 11, 0.45), inset 0 1px 0 rgba(214, 229, 224, 0.35);
+}
+
+.back-link:hover {
+  filter: brightness(1.12);
+}

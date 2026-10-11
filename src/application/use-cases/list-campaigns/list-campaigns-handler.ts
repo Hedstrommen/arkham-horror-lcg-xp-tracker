@@ -9,7 +9,7 @@ export class ListCampaignsHandler {
       .findAllByOwnerIdOrderedByStatusThenRecency(ownerId)
       .map((campaign) => ({
         campaignId: campaign.id,
-        title: campaign.title.toString(),
+        title: campaign.getTitle().toString(),
         campaignName: campaign.campaignName,
         chapter: campaign.chapter,
         investigatorName: campaign.investigatorName,

@@ -29,7 +29,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive"}">
       <div class="title-row">
-        <h2>${escapeHtml(campaign.title)}</h2>
+        <h2><a href="/campaigns/${escapeHtml(campaign.campaignId)}">${escapeHtml(campaign.title)}</a></h2>
         ${statusBadge}
       </div>
       <div class="details-row">
@@ -37,8 +37,9 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         <span class="investigator-with-icon">
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
           ${renderFactionIcon(campaign.investigatorFaction)}
+          <span class="chapter-badge">Ch. ${campaign.chapter}</span>
         </span>
-        <span class="experience-total">${campaign.totalExperience} XP</span>
+        <span class="experience-total total-xp-cell">Total xp: ${campaign.totalExperience}</span>
       </div>
       ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
       <div class="actions">
