@@ -6,6 +6,7 @@ let campaigns = [];
 let arkhamCatalog = { campaigns: [], investigators: [] };
 let selectedCampaignId = null;
 let selectedInvestigatorId = null;
+let gainPageReturnTarget = "overview";
 
 let selectedCampaignChapters = [1];
 let selectedInvestigatorChapters = [1];
@@ -159,6 +160,7 @@ function bindCampaignCardEvents(campaign) {
     gainButton.addEventListener("click", (event) => {
       event.stopPropagation();
       selectedCampaignId = campaign.id;
+      gainPageReturnTarget = "overview";
       showGainExperience();
     });
   }
@@ -174,6 +176,17 @@ function bindCampaignCardEvents(campaign) {
   });
 }
 
+
+
+function renderExperienceBreakdown(campaign) {
+  const breakdown = getExperienceBreakdown(campaign);
+  const parts = Object.entries(breakdown)
+    .map(([kind, amount]) => `${EXPERIENCE_DISPLAY_NAMES(kind)} xp: ${amount}`);
+  if (parts.length === 0) {
+    return "";
+  }
+  return `<span class="experience-breakdown">${parts.join(" &middot; ")}</span>`;
+}
 
 function showCampaignDetail() {
   const campaign = campaigns.find((candidate) => candidate.id === selectedCampaignId);
@@ -222,7 +235,7 @@ function showCampaignDetail() {
         </div>
       </form>
     </div>
-    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP</p><ul class="experience-log">${logItems}</ul>` : ""}`;
+    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP ${renderExperienceBreakdown(campaign)}</p><ul class="experience-log">${logItems}</ul>` : ""}`;
 
   document.getElementById("back-to-overview-link").addEventListener("click", (event) => {
     event.preventDefault();
@@ -236,9 +249,11 @@ function showCampaignDetail() {
   if (addExperienceButton !== null) {
     addExperienceButton.addEventListener("click", (event) => {
       event.preventDefault();
+      gainPageReturnTarget = "detail";
       showGainExperience();
     });
   }
+  bindExperienceEntryEditing(campaign);
 }
 
 function handleEditCampaign(campaign) {
@@ -272,6 +287,10 @@ function showCreateCampaign() {
         <span class="chapter-label">Campaign chapter:</span>
         <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-1-checkbox" checked> Chapter 1</label>
         <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-2-checkbox"> Chapter 2</label>
+      </div>
+      <div class="form-field">
+        <label for="campaignTitle">Title (optional)</label>
+        <input type="text" id="campaignTitle" maxlength="120" placeholder="Leave empty to use the campaign name">
       </div>
       <div class="form-field">
         <label for="campaignName">Campaign
@@ -398,6 +417,8 @@ function handleCreateCampaign() {
   const campaignName = isCustomCampaign
     ? document.getElementById("customCampaignName").value
     : document.getElementById("campaignName").value;
+  const titleInput = document.getElementById("campaignTitle").value.trim();
+  const title = titleInput.length > 0 ? titleInput : campaignName;
   const friendsInput = document.getElementById("friends").value;
   const notes = document.getElementById("notes").value;
   const investigatorId = document.getElementById("investigatorId").value;
@@ -415,6 +436,7 @@ function handleCreateCampaign() {
     }
     const campaign = createCampaign(
       `campaign-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
+      title,
       campaignName,
       friends,
       investigatorId,
@@ -448,8 +470,12 @@ function showGainExperience() {
     )
     .join("");
 
+  const backLinkLabel = gainPageReturnTarget === "detail"
+    ? "&larr; Back to campaign"
+    : "&larr; Back to campaigns";
+
   appElement.innerHTML = `
-    <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
+    <a class="back-link" href="#" id="back-to-overview-link">${backLinkLabel}</a>
     <div class="campaign-context">
       <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span></span>
       <span class="investigator-with-icon">
@@ -485,16 +511,24 @@ function showGainExperience() {
         <button class="arkham-button" type="submit">Record experience</button>
       </div>
     </form>
-    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP</p><ul class="experience-log">${logItems}</ul>` : ""}`;
+    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP ${renderExperienceBreakdown(campaign)}</p><ul class="experience-log">${logItems}</ul>` : ""}`;
 
   document.getElementById("back-to-overview-link").addEventListener("click", (event) => {
     event.preventDefault();
-    showOverview();
+    if (gainPageReturnTarget === "detail") {
+      showCampaignDetail();
+    } else {
+      showOverview();
+    }
   });
   document.getElementById("gain-experience-form").addEventListener("submit", (event) => {
     event.preventDefault();
     handleGainExperience(campaign);
   });
+  bindExperienceEntryEditing(campaign);
+}
+
+function bindExperienceEntryEditing(campaign) {
   for (const entryElement of document.querySelectorAll(".experience-entry")) {
     entryElement.addEventListener("click", () => {
       const entry = campaign.experienceLog.find(
@@ -568,7 +602,11 @@ function handleGainExperience(campaign) {
   try {
     gainExperience(campaign, experienceKind, experienceTitle, experienceAmount, notes);
     persistCampaigns();
-    showGainExperience();
+    if (gainPageReturnTarget === "detail") {
+      showCampaignDetail();
+    } else {
+      showOverview();
+    }
   } catch (error) {
     alert(error.message);
   }
@@ -583,7 +621,11 @@ function handleUpdateExperience(campaign, entry) {
   try {
     updateExperienceEntry(campaign, entry.id, experienceKind, experienceTitle, experienceAmount, notes);
     persistCampaigns();
-    showGainExperience();
+    if (gainPageReturnTarget === "detail") {
+      showCampaignDetail();
+    } else {
+      showGainExperience();
+    }
   } catch (error) {
     alert(error.message);
   }

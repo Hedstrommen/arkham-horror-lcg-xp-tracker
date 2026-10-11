@@ -700,3 +700,11 @@ img.class-icon {
 .back-link:hover {
   filter: brightness(1.12);
 }
+
+.experience-breakdown {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: normal;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}

@@ -124,6 +124,16 @@ export class Campaign {
     );
   }
 
+  public getExperienceBreakdownByKind(): Record<string, number> {
+    const totalsByKind: Record<string, number> = {};
+    for (const entry of this.experienceLog) {
+      const kind = entry.experienceType.getKind();
+      totalsByKind[kind] =
+        (totalsByKind[kind] ?? 0) + entry.experiencePoints.getAmount();
+    }
+    return totalsByKind;
+  }
+
   public getExperienceLog(): ExperienceEntry[] {
     return [...this.experienceLog];
   }

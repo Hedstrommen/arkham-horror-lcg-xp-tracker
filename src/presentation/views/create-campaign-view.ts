@@ -33,6 +33,10 @@ export function renderCreateCampaignPage(
         <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-2-checkbox"> Chapter 2</label>
       </div>
       <div class="form-field">
+        <label for="campaignTitle">Title (optional)</label>
+        <input type="text" id="campaignTitle" name="title" maxlength="120" placeholder="Leave empty to use the campaign name">
+      </div>
+      <div class="form-field">
         <label for="campaignName">Campaign
           <span class="custom-campaign-toggle">
             <input type="checkbox" id="custom-campaign-checkbox">

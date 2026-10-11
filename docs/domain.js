@@ -55,6 +55,7 @@ function parseExperienceAmount(rawAmount) {
 
 function createCampaign(
   id,
+  title,
   campaignName,
   friends,
   investigatorId,
@@ -65,7 +66,7 @@ function createCampaign(
   const trimmedNotes = String(notes ?? "").trim();
   return {
     id,
-    title: parseCampaignTitle(campaignName),
+    title: parseCampaignTitle(title),
     campaignName: parseCampaignTitle(campaignName),
     friends,
     investigatorId,
@@ -110,6 +111,15 @@ function getTotalExperience(campaign) {
     (sum, entry) => sum + entry.experienceAmount,
     0
   );
+}
+
+function getExperienceBreakdown(campaign) {
+  const totalsByKind = {};
+  for (const entry of campaign.experienceLog) {
+    totalsByKind[entry.experienceKind] =
+      (totalsByKind[entry.experienceKind] ?? 0) + entry.experienceAmount;
+  }
+  return totalsByKind;
 }
 
 function markFinished(campaign) {
