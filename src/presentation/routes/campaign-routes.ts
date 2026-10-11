@@ -37,17 +37,19 @@ export function createCampaignRoutes(
     const friendsInput = typeof request.body.friends === "string"
       ? request.body.friends
       : "";
-    const friends = friendsInput
+    const previouslyEnteredTitle =
+      typeof request.body.title === "string" ? request.body.title : "";
+    const friends: string[] = friendsInput
       .split(",")
-      .map((friend) => friend.trim())
-      .filter((friend) => friend.length > 0);
+      .map((friend: string) => friend.trim())
+      .filter((friend: string) => friend.length > 0);
 
     try {
       const campaignId = createCampaignHandler.handle({
-        title: request.body.title ?? "",
-        campaignName: request.body.campaignName ?? "",
+        title: String(request.body.title ?? ""),
+        campaignName: String(request.body.campaignName ?? ""),
         friends,
-        investigatorId: request.body.investigatorId ?? "",
+        investigatorId: String(request.body.investigatorId ?? ""),
       });
       response.redirect("/");
     } catch (error) {
@@ -57,7 +59,7 @@ export function createCampaignRoutes(
           arkhamCatalog.listCampaigns(),
           arkhamCatalog.listInvestigators(),
           errorMessage,
-          typeof request.body.title === "string" ? request.body.title : ""
+          previouslyEnteredTitle
         )
       );
     }
@@ -66,7 +68,9 @@ export function createCampaignRoutes(
   router.get(
     "/campaigns/:campaignId/gain-experience",
     (request: Request, response: Response) => {
-      const campaign = campaignRepository.findById(request.params.campaignId);
+      const campaign = campaignRepository.findById(
+        String(request.params.campaignId)
+      );
       if (campaign === null) {
         response.status(404).send("Campaign not found.");
         return;
@@ -78,7 +82,9 @@ export function createCampaignRoutes(
   router.post(
     "/campaigns/:campaignId/gain-experience",
     (request: Request, response: Response) => {
-      const campaign = campaignRepository.findById(request.params.campaignId);
+      const campaign = campaignRepository.findById(
+        String(request.params.campaignId)
+      );
       if (campaign === null) {
         response.status(404).send("Campaign not found.");
         return;
@@ -91,7 +97,7 @@ export function createCampaignRoutes(
       try {
         gainExperienceHandler.handle({
           campaignId: campaign.id,
-          experienceKind: request.body.experienceKind ?? "",
+          experienceKind: String(request.body.experienceKind ?? ""),
           experienceAmount: Number(request.body.experienceAmount),
           notes: notesInput.length > 0 ? notesInput : null,
         });
