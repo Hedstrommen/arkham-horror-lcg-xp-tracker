@@ -751,3 +751,7 @@ img.class-icon {
 .inline-form {
   display: inline;
 }
+
+.campaign-view-info .experience-breakdown {
+  margin: 0.1rem 0 0.25rem;
+}
