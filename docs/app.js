@@ -301,7 +301,7 @@ function showGainExperience() {
     .map(
       (entry) => `
       <li class="experience-entry" data-entry-id="${escapeHtml(entry.id)}">
-        <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)}${entry.experienceSuffix ? " " + escapeHtml(entry.experienceSuffix) : ""}: +${entry.experienceAmount} XP</span>
+        <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)} &mdash; ${escapeHtml(entry.experienceTitle)}: +${entry.experienceAmount} XP</span>
         ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
       </li>`
     )
@@ -324,17 +324,17 @@ function showGainExperience() {
         <select id="experienceKind" required>
           <option value="scenario">Scenario</option>
           <option value="interlude">Interlude</option>
-          <option value="card">Card experience</option>
+          <option value="weakness">Weakness</option>
+          <option value="permanent">Permanent</option>
         </select>
+      </div>
+      <div class="form-field">
+        <label for="experienceTitle">Title</label>
+        <input type="text" id="experienceTitle" maxlength="120" required placeholder='e.g. "Scenario 1", "Interlude scenario 1/2", "Prelude day 1", "In the thick of it"'>
       </div>
       <div class="form-field">
         <label for="experienceAmount">Experience (numbers)</label>
         <input type="number" id="experienceAmount" min="0" step="1" required>
-      </div>
-      <div class="form-field">
-        <label for="experienceSuffix">Suffix (optional)</label>
-        <input type="text" id="experienceSuffix" maxlength="60" placeholder="e.g. 1, Second day, Weakness">
-        <p class="form-hint">Add a label after the experience type, like "Scenario 1" or "Weakness".</p>
       </div>
       <div class="form-field">
         <label for="notes">Notes</label>
@@ -377,16 +377,17 @@ function showEditExperience(campaign, entry) {
           <select id="edit-experienceKind" required>
             <option value="scenario" ${entry.experienceKind === "scenario" ? "selected" : ""}>Scenario</option>
             <option value="interlude" ${entry.experienceKind === "interlude" ? "selected" : ""}>Interlude</option>
-            <option value="card" ${entry.experienceKind === "card" ? "selected" : ""}>Card experience</option>
+            <option value="weakness" ${entry.experienceKind === "weakness" ? "selected" : ""}>Weakness</option>
+            <option value="permanent" ${entry.experienceKind === "permanent" ? "selected" : ""}>Permanent</option>
           </select>
+        </div>
+        <div class="form-field">
+          <label for="edit-experienceTitle">Title</label>
+          <input type="text" id="edit-experienceTitle" maxlength="120" required value="${escapeHtml(entry.experienceTitle)}">
         </div>
         <div class="form-field">
           <label for="edit-experienceAmount">Experience (numbers)</label>
           <input type="number" id="edit-experienceAmount" min="0" step="1" required value="${entry.experienceAmount}">
-        </div>
-        <div class="form-field">
-          <label for="edit-experienceSuffix">Suffix</label>
-          <input type="text" id="edit-experienceSuffix" maxlength="60" value="${entry.experienceSuffix ? escapeHtml(entry.experienceSuffix) : ""}">
         </div>
         <div class="form-field">
           <label for="edit-notes">Notes</label>
@@ -409,17 +410,22 @@ function showEditExperience(campaign, entry) {
 }
 
 function EXPERIENCE_DISPLAY_NAMES(kind) {
-  return { scenario: "Scenario", interlude: "Interlude", card: "Card experience" }[kind] ?? kind;
+  return {
+    scenario: "Scenario",
+    interlude: "Interlude",
+    weakness: "Weakness",
+    permanent: "Permanent",
+  }[kind] ?? kind;
 }
 
 function handleGainExperience(campaign) {
   const experienceKind = document.getElementById("experienceKind").value;
+  const experienceTitle = document.getElementById("experienceTitle").value;
   const experienceAmount = document.getElementById("experienceAmount").value;
-  const experienceSuffix = document.getElementById("experienceSuffix").value;
   const notes = document.getElementById("notes").value;
 
   try {
-    gainExperience(campaign, experienceKind, experienceAmount, notes, experienceSuffix);
+    gainExperience(campaign, experienceKind, experienceTitle, experienceAmount, notes);
     persistCampaigns();
     showGainExperience();
   } catch (error) {
@@ -429,12 +435,12 @@ function handleGainExperience(campaign) {
 
 function handleUpdateExperience(campaign, entry) {
   const experienceKind = document.getElementById("edit-experienceKind").value;
+  const experienceTitle = document.getElementById("edit-experienceTitle").value;
   const experienceAmount = document.getElementById("edit-experienceAmount").value;
-  const experienceSuffix = document.getElementById("edit-experienceSuffix").value;
   const notes = document.getElementById("edit-notes").value;
 
   try {
-    updateExperienceEntry(campaign, entry.id, experienceKind, experienceAmount, experienceSuffix, notes);
+    updateExperienceEntry(campaign, entry.id, experienceKind, experienceTitle, experienceAmount, notes);
     persistCampaigns();
     showGainExperience();
   } catch (error) {

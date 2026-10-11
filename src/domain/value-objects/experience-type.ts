@@ -1,4 +1,4 @@
-export type ExperienceKind = "scenario" | "interlude" | "card";
+export type ExperienceKind = "scenario" | "interlude" | "weakness" | "permanent";
 
 export class ExperienceType {
   private readonly kind: ExperienceKind;
@@ -8,7 +8,12 @@ export class ExperienceType {
   }
 
   public static fromUserInput(rawKind: string): ExperienceType {
-    const validKinds: ExperienceKind[] = ["scenario", "interlude", "card"];
+    const validKinds: ExperienceKind[] = [
+      "scenario",
+      "interlude",
+      "weakness",
+      "permanent",
+    ];
     if (!validKinds.includes(rawKind as ExperienceKind)) {
       throw new Error(`Experience type must be one of: ${validKinds.join(", ")}.`);
     }
@@ -23,7 +28,8 @@ export class ExperienceType {
     const displayNames: Record<ExperienceKind, string> = {
       scenario: "Scenario",
       interlude: "Interlude",
-      card: "Card experience",
+      weakness: "Weakness",
+      permanent: "Permanent",
     };
     return displayNames[this.kind];
   }

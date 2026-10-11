@@ -1,6 +1,6 @@
 import { CampaignRepository } from "../../../domain/campaign/campaign-repository";
 import { ExperiencePoints } from "../../../domain/value-objects/experience-points";
-import { ExperienceSuffix } from "../../../domain/value-objects/experience-suffix";
+import { ExperienceTitle } from "../../../domain/value-objects/experience-title";
 import { ExperienceType } from "../../../domain/value-objects/experience-type";
 import { UpdateExperienceCommand } from "./update-experience-command";
 
@@ -20,15 +20,15 @@ export class UpdateExperienceHandler {
     const experiencePoints = ExperiencePoints.fromUserInput(
       command.experienceAmount
     );
-    const experienceSuffix = ExperienceSuffix.fromUserInput(
-      command.experienceSuffix ?? ""
+    const experienceTitle = ExperienceTitle.fromUserInput(
+      command.experienceTitle
     );
 
     campaign.updateExperienceEntry(
       command.entryId,
       experienceType,
       experiencePoints,
-      experienceSuffix === null ? null : experienceSuffix.toString(),
+      experienceTitle.toString(),
       command.notes
     );
     this.campaignRepository.save(campaign);

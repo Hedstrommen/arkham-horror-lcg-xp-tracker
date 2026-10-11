@@ -4,6 +4,6 @@ export interface UpdateExperienceCommand {
   entryId: string;
   experienceKind: string;
   experienceAmount: number;
-  experienceSuffix: string | null;
+  experienceTitle: string;
   notes: string | null;
 }

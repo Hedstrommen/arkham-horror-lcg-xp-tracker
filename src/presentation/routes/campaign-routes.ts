@@ -139,8 +139,8 @@ export function createCampaignRoutes(
       const notesInput = typeof request.body.notes === "string"
         ? request.body.notes.trim()
         : "";
-      const suffixInput = typeof request.body.experienceSuffix === "string"
-        ? request.body.experienceSuffix.trim()
+      const titleInput = typeof request.body.experienceTitle === "string"
+        ? request.body.experienceTitle.trim()
         : "";
 
       try {
@@ -149,7 +149,7 @@ export function createCampaignRoutes(
           ownerId,
           experienceKind: String(request.body.experienceKind ?? ""),
           experienceAmount: Number(request.body.experienceAmount),
-          experienceSuffix: suffixInput.length > 0 ? suffixInput : null,
+          experienceTitle: titleInput,
           notes: notesInput.length > 0 ? notesInput : null,
         });
         response.redirect("/");
@@ -180,8 +180,8 @@ export function createCampaignRoutes(
       const notesInput = typeof request.body.notes === "string"
         ? request.body.notes.trim()
         : "";
-      const suffixInput = typeof request.body.experienceSuffix === "string"
-        ? request.body.experienceSuffix.trim()
+      const titleInput = typeof request.body.experienceTitle === "string"
+        ? request.body.experienceTitle.trim()
         : "";
 
       try {
@@ -191,7 +191,7 @@ export function createCampaignRoutes(
           entryId: String(request.params.entryId),
           experienceKind: String(request.body.experienceKind ?? ""),
           experienceAmount: Number(request.body.experienceAmount),
-          experienceSuffix: suffixInput.length > 0 ? suffixInput : null,
+          experienceTitle: titleInput,
           notes: notesInput.length > 0 ? notesInput : null,
         });
         response.redirect(`/campaigns/${campaign.id}/gain-experience`);
