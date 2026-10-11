@@ -12,7 +12,7 @@ To publish it on GitHub Pages:
 
 1. On GitHub, open **Settings → Pages** for this repository
 2. Under **Build and deployment**, set **Source** to **Deploy from a branch**
-3. Choose the **main** branch and the **/ (root)** folder — actually select **/docs** if offered, otherwise the root works because the app lives in `docs/`
+3. Choose the **main** branch and **select the `/docs` folder** — this is important: with the `/ (root)` folder selected, the site shows this README instead of the app
 4. Save, and within a minute or two the app is live at `https://<your-username>.github.io/arkham-horror-lcg-xp-tracker/`
 
 Anyone with that link can use the app on their own device — each browser keeps its own campaigns, entirely separate from anyone else's.
