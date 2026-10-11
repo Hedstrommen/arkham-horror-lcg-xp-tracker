@@ -28,9 +28,9 @@ export function renderCreateCampaignPage(
     <form class="form-card" method="post" action="/campaigns">
       <h2>Create a new campaign</h2>
       <div class="form-field chapter-select">
-        <span class="chapter-label">Chapter:</span>
-        <label class="chapter-checkbox"><input type="checkbox" id="chapter-1-checkbox" checked> Chapter 1</label>
-        <label class="chapter-checkbox"><input type="checkbox" id="chapter-2-checkbox"> Chapter 2</label>
+        <span class="chapter-label">Campaign chapter:</span>
+        <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-1-checkbox" checked> Chapter 1</label>
+        <label class="chapter-checkbox"><input type="checkbox" id="campaign-chapter-2-checkbox"> Chapter 2</label>
       </div>
       <div class="form-field">
         <label for="campaignName">Campaign
@@ -53,6 +53,11 @@ export function renderCreateCampaignPage(
       </div>
       <div class="form-field">
         <label for="investigator-search">Your investigator</label>
+        <div class="chapter-select">
+          <span class="chapter-label">Investigator chapter:</span>
+          <label class="chapter-checkbox"><input type="checkbox" id="investigator-chapter-1-checkbox" checked> Chapter 1</label>
+          <label class="chapter-checkbox"><input type="checkbox" id="investigator-chapter-2-checkbox"> Chapter 2</label>
+        </div>
         <input type="text" id="investigator-search" placeholder="Search by name..." autocomplete="off">
         <div class="faction-filter" id="faction-filter">
           <button type="button" class="faction-filter-button selected" data-faction="all">All</button>
@@ -73,9 +78,9 @@ export function renderCreateCampaignPage(
       const ALL_CAMPAIGNS = ${JSON.stringify(campaigns)};
       const ALL_INVESTIGATORS = ${JSON.stringify(investigators)};
 
-      function selectedChapters() {
+      function checkedChapters(prefix) {
         const chapters = [1, 2].filter(function (chapter) {
-          return document.getElementById("chapter-" + chapter + "-checkbox").checked;
+          return document.getElementById(prefix + "-chapter-" + chapter + "-checkbox").checked;
         });
         return chapters.length > 0 ? chapters : [1];
       }
@@ -83,22 +88,18 @@ export function renderCreateCampaignPage(
       function renderCampaignOptions() {
         const campaignSelect = document.getElementById("campaignName");
         campaignSelect.innerHTML = ALL_CAMPAIGNS
-          .filter(function (campaign) { return selectedChapters().includes(campaign.chapter); })
+          .filter(function (campaign) { return checkedChapters("campaign").includes(campaign.chapter); })
           .map(function (campaign) {
-            return '<option value="' + ${JSON.stringify("")} + campaign.campaignName + '">' + campaign.campaignName + "</option>";
+            return '<option value="' + campaign.campaignName + '">' + campaign.campaignName + "</option>";
           })
           .join("");
+        document.getElementById("chapter").value = checkedChapters("campaign").includes(1) ? "1" : "2";
       }
 
-      document.getElementById("chapter-1-checkbox").addEventListener("change", onChapterChanged);
-      document.getElementById("chapter-2-checkbox").addEventListener("change", onChapterChanged);
-
-      function onChapterChanged() {
-        const chapters = selectedChapters();
-        document.getElementById("chapter").value = chapters.includes(1) ? "1" : "2";
-        renderCampaignOptions();
-        renderInvestigatorOptions();
-      }
+      document.getElementById("campaign-chapter-1-checkbox").addEventListener("change", renderCampaignOptions);
+      document.getElementById("campaign-chapter-2-checkbox").addEventListener("change", renderCampaignOptions);
+      document.getElementById("investigator-chapter-1-checkbox").addEventListener("change", renderInvestigatorOptions);
+      document.getElementById("investigator-chapter-2-checkbox").addEventListener("change", renderInvestigatorOptions);
 
       function renderInvestigatorOptions() {
         const searchInputElement = document.getElementById("investigator-search");
@@ -110,7 +111,7 @@ export function renderCreateCampaignPage(
           const matchesSearch = searchString.length === 0
             || investigator.investigatorName.toLowerCase().includes(searchString);
           const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
-          const matchesChapter = selectedChapters().includes(investigator.chapter);
+          const matchesChapter = checkedChapters("investigator").includes(investigator.chapter);
           return matchesSearch && matchesFaction && matchesChapter;
         });
         investigatorSelect.innerHTML = matchingInvestigators
