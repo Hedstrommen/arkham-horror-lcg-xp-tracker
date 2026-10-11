@@ -5,6 +5,7 @@ const EXPORT_FILE_NAME = "arkham-xp-tracker-data.json";
 let campaigns = [];
 let arkhamCatalog = { campaigns: [], investigators: [] };
 let selectedCampaignId = null;
+let selectedInvestigatorId = null;
 
 document.addEventListener("DOMContentLoaded", startApp);
 
@@ -81,7 +82,7 @@ function showOverview() {
 }
 
 function renderCampaignCard(campaign) {
-  const factionSymbol = renderClassIcon(campaign.investigatorFaction);
+
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive"}" data-campaign-id="${escapeHtml(campaign.id)}">
       <div class="title-row">
@@ -92,12 +93,9 @@ function renderCampaignCard(campaign) {
       </div>
       <div class="details-row">
         <span>${escapeHtml(campaign.campaignName)}</span>
-        <span class="faction-icon ${escapeHtml(campaign.investigatorFaction)}" title="${escapeHtml(campaign.investigatorFaction)}">
-          ${factionSymbol}
-        </span>
         <span class="investigator-with-icon">
-          ${renderClassIcon(campaign.investigatorFaction)}
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+          ${renderClassIcon(campaign.investigatorFaction)}
         </span>
         <span class="experience-total">${getTotalExperience(campaign)} XP</span>
       </div>
@@ -179,7 +177,8 @@ function showCreateCampaign() {
             .map((faction) => `<button type="button" class="faction-filter-button ${faction === "all" ? "selected" : ""}" data-faction="${faction}">${faction === "all" ? "All" : renderClassIcon(faction) + " " + faction}</button>`)
             .join("")}
         </div>
-        <select id="investigatorId" required size="6"></select>
+        <div class="investigator-pick-list" id="investigator-pick-list" role="listbox"></div>
+        <input type="hidden" id="investigatorId" name="investigatorId">
       </div>
       <div class="actions">
         <button class="arkham-button" type="submit">Start campaign</button>
@@ -219,25 +218,39 @@ function showCreateCampaign() {
       renderInvestigatorOptions();
     });
   }
+  selectedInvestigatorId = null;
   renderInvestigatorOptions();
 }
 
 function renderInvestigatorOptions() {
   const searchString = document.getElementById("investigator-search").value.trim().toLowerCase();
   const selectedFaction = document.querySelector(".faction-filter-button.selected")?.dataset.faction ?? "all";
-  const investigatorSelect = document.getElementById("investigatorId");
+  const pickListElement = document.getElementById("investigator-pick-list");
   const matchingInvestigators = arkhamCatalog.investigators.filter((investigator) => {
     const matchesSearch = searchString.length === 0
       || investigator.investigatorName.toLowerCase().includes(searchString);
     const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
     return matchesSearch && matchesFaction;
   });
-  investigatorSelect.innerHTML = matchingInvestigators
-    .map((investigator) =>
-      `<option value="${escapeHtml(investigator.investigatorId)}" class="faction-${escapeHtml(investigator.factionName)}">
-        ${escapeHtml(investigator.investigatorName)}
-      </option>`)
+  pickListElement.innerHTML = matchingInvestigators
+    .map((investigator) => `
+      <button type="button"
+              class="investigator-pick ${investigator.investigatorId === selectedInvestigatorId ? "selected" : ""}"
+              data-investigator-id="${escapeHtml(investigator.investigatorId)}">
+        <span class="investigator-name ${escapeHtml(investigator.factionName)}">${escapeHtml(investigator.investigatorName)}</span>
+        ${renderClassIcon(investigator.factionName)}
+      </button>`)
     .join("");
+  for (const pickButton of pickListElement.querySelectorAll(".investigator-pick")) {
+    pickButton.addEventListener("click", () => {
+      selectedInvestigatorId = pickButton.dataset.investigatorId;
+      document.getElementById("investigatorId").value = selectedInvestigatorId;
+      for (const otherButton of pickListElement.querySelectorAll(".investigator-pick")) {
+        otherButton.classList.remove("selected");
+      }
+      pickButton.classList.add("selected");
+    });
+  }
 }
 
 function handleCreateCampaign() {
@@ -287,8 +300,8 @@ function showGainExperience() {
   const logItems = campaign.experienceLog
     .map(
       (entry) => `
-      <li>
-        <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)}: +${entry.experienceAmount} XP</span>
+      <li class="experience-entry" data-entry-id="${escapeHtml(entry.id)}">
+        <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)}${entry.experienceSuffix ? " " + escapeHtml(entry.experienceSuffix) : ""}: +${entry.experienceAmount} XP</span>
         ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
       </li>`
     )
@@ -319,6 +332,11 @@ function showGainExperience() {
         <input type="number" id="experienceAmount" min="0" step="1" required>
       </div>
       <div class="form-field">
+        <label for="experienceSuffix">Suffix (optional)</label>
+        <input type="text" id="experienceSuffix" maxlength="60" placeholder="e.g. 1, Second day, Weakness">
+        <p class="form-hint">Add a label after the experience type, like "Scenario 1" or "Weakness".</p>
+      </div>
+      <div class="form-field">
         <label for="notes">Notes</label>
         <textarea id="notes" placeholder="Optional notes"></textarea>
       </div>
@@ -326,7 +344,7 @@ function showGainExperience() {
         <button class="arkham-button" type="submit">Record experience</button>
       </div>
     </form>
-    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><ul class="experience-log">${logItems}</ul>` : ""}`;
+    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP</p><ul class="experience-log">${logItems}</ul>` : ""}`;
 
   document.getElementById("back-to-overview-link").addEventListener("click", (event) => {
     event.preventDefault();
@@ -335,6 +353,58 @@ function showGainExperience() {
   document.getElementById("gain-experience-form").addEventListener("submit", (event) => {
     event.preventDefault();
     handleGainExperience(campaign);
+  });
+  for (const entryElement of document.querySelectorAll(".experience-entry")) {
+    entryElement.addEventListener("click", () => {
+      const entry = campaign.experienceLog.find(
+        (candidate) => candidate.id === entryElement.dataset.entryId
+      );
+      if (entry !== undefined) {
+        showEditExperience(campaign, entry);
+      }
+    });
+  }
+}
+
+function showEditExperience(campaign, entry) {
+  const appElement = document.getElementById("app");
+  appElement.insertAdjacentHTML("beforeend", `
+    <div class="edit-entry-overlay" id="edit-entry-overlay">
+      <form class="form-card edit-entry-card" id="edit-experience-form">
+        <h2>Edit experience</h2>
+        <div class="form-field">
+          <label for="edit-experienceKind">Experience type</label>
+          <select id="edit-experienceKind" required>
+            <option value="scenario" ${entry.experienceKind === "scenario" ? "selected" : ""}>Scenario</option>
+            <option value="interlude" ${entry.experienceKind === "interlude" ? "selected" : ""}>Interlude</option>
+            <option value="card" ${entry.experienceKind === "card" ? "selected" : ""}>Card experience</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="edit-experienceAmount">Experience (numbers)</label>
+          <input type="number" id="edit-experienceAmount" min="0" step="1" required value="${entry.experienceAmount}">
+        </div>
+        <div class="form-field">
+          <label for="edit-experienceSuffix">Suffix</label>
+          <input type="text" id="edit-experienceSuffix" maxlength="60" value="${entry.experienceSuffix ? escapeHtml(entry.experienceSuffix) : ""}">
+        </div>
+        <div class="form-field">
+          <label for="edit-notes">Notes</label>
+          <textarea id="edit-notes">${entry.notes ? escapeHtml(entry.notes) : ""}</textarea>
+        </div>
+        <div class="actions">
+          <button class="arkham-button" type="submit">Save changes</button>
+          <button class="arkham-button subtle" type="button" id="cancel-edit-button">Cancel</button>
+        </div>
+      </form>
+    </div>`);
+
+  document.getElementById("edit-experience-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    handleUpdateExperience(campaign, entry);
+  });
+  document.getElementById("cancel-edit-button").addEventListener("click", () => {
+    document.getElementById("edit-entry-overlay").remove();
   });
 }
 
@@ -345,10 +415,26 @@ function EXPERIENCE_DISPLAY_NAMES(kind) {
 function handleGainExperience(campaign) {
   const experienceKind = document.getElementById("experienceKind").value;
   const experienceAmount = document.getElementById("experienceAmount").value;
+  const experienceSuffix = document.getElementById("experienceSuffix").value;
   const notes = document.getElementById("notes").value;
 
   try {
-    gainExperience(campaign, experienceKind, experienceAmount, notes);
+    gainExperience(campaign, experienceKind, experienceAmount, notes, experienceSuffix);
+    persistCampaigns();
+    showGainExperience();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+function handleUpdateExperience(campaign, entry) {
+  const experienceKind = document.getElementById("edit-experienceKind").value;
+  const experienceAmount = document.getElementById("edit-experienceAmount").value;
+  const experienceSuffix = document.getElementById("edit-experienceSuffix").value;
+  const notes = document.getElementById("edit-notes").value;
+
+  try {
+    updateExperienceEntry(campaign, entry.id, experienceKind, experienceAmount, experienceSuffix, notes);
     persistCampaigns();
     showGainExperience();
   } catch (error) {

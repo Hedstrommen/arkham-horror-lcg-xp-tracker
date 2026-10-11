@@ -22,9 +22,6 @@ export function renderOverviewPage(campaigns: CampaignOverview[]): string {
 }
 
 function renderCampaignCard(campaign: CampaignOverview): string {
-  const factionIcon = renderFactionIcon(
-    campaign.investigatorFaction as InvestigatorFactionName
-  );
   const statusBadge = campaign.isActive
     ? '<span class="status-badge active">Active</span>'
     : '<span class="status-badge">Finished</span>';
@@ -37,10 +34,9 @@ function renderCampaignCard(campaign: CampaignOverview): string {
       </div>
       <div class="details-row">
         <span>${escapeHtml(campaign.campaignName)}</span>
-        ${factionIcon}
         <span class="investigator-with-icon">
-          ${renderFactionIcon(campaign.investigatorFaction)}
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+          ${renderFactionIcon(campaign.investigatorFaction)}
         </span>
         <span class="experience-total">${campaign.totalExperience} XP</span>
       </div>

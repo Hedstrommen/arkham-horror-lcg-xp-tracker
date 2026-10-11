@@ -60,6 +60,7 @@ describe("GainExperienceHandler", () => {
       ownerId: OWNER_ID,
       experienceKind: "scenario",
       experienceAmount: 4,
+      experienceSuffix: "1",
       notes: "Victory!",
     });
 
@@ -77,6 +78,7 @@ describe("GainExperienceHandler", () => {
         ownerId: "intruder-1",
         experienceKind: "scenario",
         experienceAmount: 4,
+        experienceSuffix: null,
         notes: null,
       })
     ).toThrow();
@@ -92,6 +94,7 @@ describe("GainExperienceHandler", () => {
         ownerId: OWNER_ID,
         experienceKind: "scenario",
         experienceAmount: 4,
+        experienceSuffix: null,
         notes: null,
       })
     ).toThrow();

@@ -10,6 +10,7 @@ import { ListCampaignsHandler } from "../application/use-cases/list-campaigns/li
 import { ChangeCampaignStatusHandler } from "../application/use-cases/change-campaign-status/change-campaign-status-handler";
 import { SignUpHandler } from "../application/use-cases/auth/sign-up-handler";
 import { SignInHandler } from "../application/use-cases/auth/sign-in-handler";
+import { UpdateExperienceHandler } from "../application/use-cases/update-experience/update-experience-handler";
 import { openDatabase } from "../infrastructure/persistence/database";
 import { SqliteCampaignRepository } from "../infrastructure/persistence/sqlite-campaign-repository";
 import { SqliteUserRepository } from "../infrastructure/persistence/sqlite-user-repository";
@@ -27,6 +28,7 @@ export interface DependencyContainer {
   listCampaignsHandler: ListCampaignsHandler;
   createCampaignHandler: CreateCampaignHandler;
   gainExperienceHandler: GainExperienceHandler;
+  updateExperienceHandler: UpdateExperienceHandler;
   changeCampaignStatusHandler: ChangeCampaignStatusHandler;
   signUpHandler: SignUpHandler;
   signInHandler: SignInHandler;
@@ -50,6 +52,7 @@ export function buildDependencyContainer(
     idGenerator
   );
   const gainExperienceHandler = new GainExperienceHandler(campaignRepository);
+  const updateExperienceHandler = new UpdateExperienceHandler(campaignRepository);
   const changeCampaignStatusHandler = new ChangeCampaignStatusHandler(
     campaignRepository
   );
@@ -69,6 +72,7 @@ export function buildDependencyContainer(
     listCampaignsHandler,
     createCampaignHandler,
     gainExperienceHandler,
+    updateExperienceHandler,
     changeCampaignStatusHandler,
     signUpHandler,
     signInHandler,

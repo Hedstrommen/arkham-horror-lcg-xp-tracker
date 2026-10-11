@@ -1,6 +1,7 @@
 import { CampaignRepository } from "../../../domain/campaign/campaign-repository";
 import { ExperiencePoints } from "../../../domain/value-objects/experience-points";
 import { ExperienceType } from "../../../domain/value-objects/experience-type";
+import { ExperienceSuffix } from "../../../domain/value-objects/experience-suffix";
 import { GainExperienceCommand } from "./gain-experience-command";
 
 export class GainExperienceHandler {
@@ -19,8 +20,16 @@ export class GainExperienceHandler {
     const experiencePoints = ExperiencePoints.fromUserInput(
       command.experienceAmount
     );
+    const experienceSuffix = ExperienceSuffix.fromUserInput(
+      command.experienceSuffix ?? ""
+    );
 
-    campaign.gainExperience(experienceType, experiencePoints, command.notes);
+    campaign.gainExperience(
+      experienceType,
+      experiencePoints,
+      experienceSuffix === null ? null : experienceSuffix.toString(),
+      command.notes
+    );
     this.campaignRepository.save(campaign);
   }
 }

@@ -30,6 +30,7 @@ const CREATE_EXPERIENCE_ENTRIES_TABLE = `
     campaign_id TEXT NOT NULL REFERENCES campaigns(id),
     experience_kind TEXT NOT NULL,
     experience_amount INTEGER NOT NULL,
+    experience_suffix TEXT,
     notes TEXT
   )
 `;

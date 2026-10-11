@@ -28,6 +28,7 @@ app.use(
     container.listCampaignsHandler,
     container.createCampaignHandler,
     container.gainExperienceHandler,
+    container.updateExperienceHandler,
     container.campaignRepository,
     container.arkhamCatalog,
     container.changeCampaignStatusHandler,
