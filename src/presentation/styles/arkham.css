@@ -749,3 +749,7 @@ img.class-icon {
   height: 22px;
   vertical-align: middle;
 }
+
+.inline-form {
+  display: inline;
+}

@@ -106,6 +106,15 @@ export class SqliteCampaignRepository implements CampaignRepository {
     })();
   }
 
+  public deleteByIdAndOwnerId(campaignId: string, ownerId: string): void {
+    this.database
+      .prepare("DELETE FROM experience_entries WHERE campaign_id = ?")
+      .run(campaignId);
+    this.database
+      .prepare("DELETE FROM campaigns WHERE id = ? AND owner_id = ?")
+      .run(campaignId, ownerId);
+  }
+
   public findByIdAndOwnerId(
     campaignId: string,
     ownerId: string
