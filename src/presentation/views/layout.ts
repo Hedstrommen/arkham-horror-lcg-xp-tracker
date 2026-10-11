@@ -18,7 +18,7 @@ export function renderLayout(pageTitle: string, content: string): string {
 </head>
 <body>
   <header class="page-header">
-    <h1>Arkham XP Tracker</h1>
+    <h1>Arkham XP Tracker<span class="title-subtitle">The Card Game Campaign Log</span></h1>
     <p>The night is dark, and experience points are precious.</p>
     <form method="post" action="/auth/sign-out">
       <button class="sign-out-button" type="submit">Sign out</button>
