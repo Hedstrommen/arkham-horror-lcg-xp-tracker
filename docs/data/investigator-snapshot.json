@@ -2,321 +2,415 @@
   {
     "investigatorId": "01001",
     "investigatorName": "Roland Banks",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "01002",
     "investigatorName": "Daisy Walker",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "01003",
     "investigatorName": "\"Skids\" O'Toole",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "01004",
     "investigatorName": "Agnes Baker",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "01005",
     "investigatorName": "Wendy Adams",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "02003",
     "investigatorName": "Zoey Samaras",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "02004",
     "investigatorName": "Rex Murphy",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "02005",
     "investigatorName": "Jenny Barnes",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "02006",
     "investigatorName": "Jim Culver",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "02007",
     "investigatorName": "\"Ashcan\" Pete",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "03003",
     "investigatorName": "Mark Harrigan",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "03004",
     "investigatorName": "Minh Thi Phan",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "03005",
     "investigatorName": "Sefina Rousseau",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "03006",
     "investigatorName": "Akachi Onyele",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "03007",
     "investigatorName": "William Yorick",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "03008",
     "investigatorName": "Lola Hayes",
-    "factionName": "neutral"
+    "factionName": "neutral",
+    "chapter": 1
   },
   {
     "investigatorId": "04003",
     "investigatorName": "Leo Anderson",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "04004",
     "investigatorName": "Ursula Downs",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "04005",
     "investigatorName": "Finn Edwards",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "04006",
     "investigatorName": "Father Mateo",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "04007",
     "investigatorName": "Calvin Wright",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "05003",
     "investigatorName": "Carolyn Fern",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "05004",
     "investigatorName": "Joe Diamond",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "05005",
     "investigatorName": "Preston Fairmont",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "05006",
     "investigatorName": "Diana Stanley",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "05007",
     "investigatorName": "Rita Young",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "05008",
     "investigatorName": "Marie Lambeau",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "06003",
     "investigatorName": "Tommy Muldoon",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "06004",
     "investigatorName": "Mandy Thompson",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "06005",
     "investigatorName": "Tony Morgan",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "06006",
     "investigatorName": "Luke Robinson",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "06007",
     "investigatorName": "Patrice Hathaway",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "07003",
     "investigatorName": "Sister Mary",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "07004",
     "investigatorName": "Amanda Sharpe",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "07005",
     "investigatorName": "Trish Scarborough",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "07006",
     "investigatorName": "Dexter Drake",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "07007",
     "investigatorName": "Silas Marsh",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "08003",
     "investigatorName": "Lily Chen",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "08004",
     "investigatorName": "Norman Withers",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "08005",
     "investigatorName": "Monterey Jack",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "08006",
     "investigatorName": "Daniela Reyes",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "08007",
     "investigatorName": "Bob Jenkins",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "09003",
     "investigatorName": "Carson Sinclair",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "09004",
     "investigatorName": "Amina Zidane",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "09005",
     "investigatorName": "Kymani Jones",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "09006",
     "investigatorName": "Vincent Lee",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "09007",
     "investigatorName": "Darrell Simmons",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "09008",
     "investigatorName": "Charlie Kane",
-    "factionName": "neutral"
+    "factionName": "neutral",
+    "chapter": 1
   },
   {
     "investigatorId": "10003",
     "investigatorName": "Kate Winthrop",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "10004",
     "investigatorName": "Hank Samson",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "10005",
     "investigatorName": "Wilson Richards",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "10006",
     "investigatorName": "Alessandra Zorzi",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "10007",
     "investigatorName": "Kohaku Narukami",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "11003",
     "investigatorName": "Marion Tavares",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "11004",
     "investigatorName": "Agatha Crane",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "11005",
     "investigatorName": "Lucius Galloway",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "11006",
     "investigatorName": "Gloria Goldberg",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "11007",
     "investigatorName": "George Barnaby",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
   },
   {
     "investigatorId": "11008",
     "investigatorName": "Michael McGlen",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "starter01",
     "investigatorName": "Nathaniel Cho",
-    "factionName": "guardian"
+    "factionName": "guardian",
+    "chapter": 1
   },
   {
     "investigatorId": "starter02",
     "investigatorName": "Harvey Walters",
-    "factionName": "seeker"
+    "factionName": "seeker",
+    "chapter": 1
   },
   {
     "investigatorId": "starter03",
     "investigatorName": "Winifred Habbamock",
-    "factionName": "rogue"
+    "factionName": "rogue",
+    "chapter": 1
   },
   {
     "investigatorId": "starter04",
     "investigatorName": "Jacqueline Fine",
-    "factionName": "mystic"
+    "factionName": "mystic",
+    "chapter": 1
   },
   {
     "investigatorId": "starter05",
     "investigatorName": "Stella Clark",
-    "factionName": "survivor"
+    "factionName": "survivor",
+    "chapter": 1
+  },
+  {
+    "investigatorId": "core2026-01",
+    "investigatorName": "Daniela Reyes",
+    "factionName": "guardian",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "core2026-04",
+    "investigatorName": "Joe Diamond",
+    "factionName": "seeker",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "core2026-07",
+    "investigatorName": "Trish Scarborough",
+    "factionName": "rogue",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "core2026-10",
+    "investigatorName": "Dexter Drake",
+    "factionName": "mystic",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "core2026-13",
+    "investigatorName": "Isabelle Barnes",
+    "factionName": "survivor",
+    "chapter": 2
   }
 ]

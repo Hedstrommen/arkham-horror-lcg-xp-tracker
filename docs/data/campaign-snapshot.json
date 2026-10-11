@@ -1,13 +1,54 @@
 [
-  { "campaignName": "Night of the Zealot" },
-  { "campaignName": "The Dunwich Legacy" },
-  { "campaignName": "The Path to Carcosa" },
-  { "campaignName": "The Forgotten Age" },
-  { "campaignName": "The Circle Undone" },
-  { "campaignName": "The Dream-Eaters" },
-  { "campaignName": "The Innsmouth Conspiracy" },
-  { "campaignName": "Edge of the Earth" },
-  { "campaignName": "The Scarlet Keys" },
-  { "campaignName": "The Feast of Hemlock Vale" },
-  { "campaignName": "The Drowned City" }
+  {
+    "campaignName": "Night of the Zealot",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Dunwich Legacy",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Path to Carcosa",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Forgotten Age",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Circle Undone",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Dream-Eaters",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Innsmouth Conspiracy",
+    "chapter": 1
+  },
+  {
+    "campaignName": "Edge of the Earth",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Scarlet Keys",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Feast of Hemlock Vale",
+    "chapter": 1
+  },
+  {
+    "campaignName": "The Drowned City",
+    "chapter": 1
+  },
+  {
+    "campaignName": "Brethren of Ash",
+    "chapter": 2
+  },
+  {
+    "campaignName": "Children of Blood",
+    "chapter": 2
+  }
 ]
