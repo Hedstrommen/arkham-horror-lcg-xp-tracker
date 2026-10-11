@@ -1,0 +1,106 @@
+import { CampaignTitle } from "../value-objects/campaign-title";
+import { ExperienceEntry } from "./experience-entry";
+import { ExperiencePoints } from "../value-objects/experience-points";
+import { ExperienceType } from "../value-objects/experience-type";
+
+export class Campaign {
+  private experienceLog: ExperienceEntry[];
+
+  private constructor(
+    public readonly id: string,
+    public readonly title: CampaignTitle,
+    public readonly campaignName: string,
+    public readonly friends: string[],
+    public readonly investigatorId: string,
+    public readonly investigatorName: string,
+    public readonly investigatorFaction: string,
+    private isActive: boolean,
+    experienceLog: ExperienceEntry[]
+  ) {
+    this.experienceLog = experienceLog;
+  }
+
+  public static startNew(
+    id: string,
+    title: CampaignTitle,
+    campaignName: string,
+    friends: string[],
+    investigatorId: string,
+    investigatorName: string,
+    investigatorFaction: string
+  ): Campaign {
+    return new Campaign(
+      id,
+      title,
+      campaignName,
+      friends,
+      investigatorId,
+      investigatorName,
+      investigatorFaction,
+      true,
+      []
+    );
+  }
+
+  public static reconstitute(
+    id: string,
+    title: CampaignTitle,
+    campaignName: string,
+    friends: string[],
+    investigatorId: string,
+    investigatorName: string,
+    investigatorFaction: string,
+    isActive: boolean,
+    experienceLog: ExperienceEntry[]
+  ): Campaign {
+    return new Campaign(
+      id,
+      title,
+      campaignName,
+      friends,
+      investigatorId,
+      investigatorName,
+      investigatorFaction,
+      isActive,
+      experienceLog
+    );
+  }
+
+  public gainExperience(
+    experienceType: ExperienceType,
+    experiencePoints: ExperiencePoints,
+    notes: string | null
+  ): ExperienceEntry {
+    const entry = new ExperienceEntry(
+      this.generateEntryId(),
+      experienceType,
+      experiencePoints,
+      notes
+    );
+    this.experienceLog.push(entry);
+    return entry;
+  }
+
+  public getTotalExperience(): number {
+    return this.experienceLog.reduce(
+      (sum, entry) => sum + entry.experiencePoints.getAmount(),
+      0
+    );
+  }
+
+  public getExperienceLog(): ExperienceEntry[] {
+    return [...this.experienceLog];
+  }
+
+  public getIsActive(): boolean {
+    return this.isActive;
+  }
+
+  private generateEntryId(): string {
+    const highestEntryNumber = this.experienceLog.reduce((highest, entry) => {
+      const entryNumber = Number(entry.id.split("-")[1]);
+      return entryNumber > highest ? entryNumber : highest;
+    }, 0);
+    return `${this.id}-entry-${highestEntryNumber + 1}`;
+  }
+}
