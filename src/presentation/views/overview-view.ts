@@ -41,6 +41,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         <span>${escapeHtml(campaign.investigatorName)}</span>
         <span class="experience-total">${campaign.totalExperience} XP</span>
       </div>
+      ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
       <div class="actions">
         ${campaign.isActive ? renderGainExperienceButton(campaign.campaignId) : ""}
         ${renderStatusToggle(campaign)}

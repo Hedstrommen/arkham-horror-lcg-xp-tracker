@@ -418,3 +418,43 @@ main {
   align-items: center;
   margin-top: 1rem;
 }
+
+.hidden {
+  display: none;
+}
+
+.faction-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.5rem 0;
+}
+
+.faction-filter-button {
+  background: linear-gradient(180deg, #6b5232, #4f3c22);
+  color: #f0ead8;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--gold-deep);
+  border-radius: 3px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.faction-filter-button.selected {
+  background: linear-gradient(180deg, #2e7d78, #1a5c58 60%, #0f3d3e);
+  border-color: #0c2f30;
+  font-weight: bold;
+}
+
+#investigatorId {
+  height: auto;
+  max-height: 11rem;
+}
+
+.campaign-card .campaign-notes {
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
