@@ -185,7 +185,7 @@ function renderExperienceBreakdown(campaign) {
   return `<span class="experience-breakdown">${parts.join(" &middot; ")}</span>`;
 }
 
-function showCampaignDetail() {
+function showCampaignDetail(editMode = false) {
   const campaign = campaigns.find((candidate) => candidate.id === selectedCampaignId);
   if (campaign === undefined) {
     showOverview();
@@ -202,21 +202,11 @@ function showCampaignDetail() {
     )
     .join("");
 
-  appElement.innerHTML = `
-    <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
-    <div class="form-card campaign-detail-card">
+  const infoSection = editMode ? `
       <form id="edit-campaign-form">
         <div class="form-field">
           <label for="campaign-detail-title">Title</label>
           <input type="text" id="campaign-detail-title" maxlength="120" required value="${escapeHtml(campaign.title)}">
-        </div>
-        <div class="detail-info-row">
-          <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span></span>
-          <span class="investigator-with-icon">
-            <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
-            ${renderClassIcon(campaign.investigatorFaction)}
-            <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span>
-          </span>
         </div>
         <div class="form-field">
           <label for="campaign-detail-friends">Friends</label>
@@ -228,9 +218,33 @@ function showCampaignDetail() {
         </div>
         <div class="actions">
           <button class="arkham-button" type="submit">Save changes</button>
-          ${campaign.isActive ? `<a class="arkham-button" href="#" id="detail-add-experience-button">Add experience</a>` : ""}
+          <button class="arkham-button subtle" type="button" id="cancel-edit-campaign-button">Cancel</button>
         </div>
-      </form>
+      </form>` : `
+      <div class="campaign-view-info">
+        <h2>${escapeHtml(campaign.title)}</h2>
+        <div class="detail-info-row">
+          <span class="campaign-name-with-sigil">${escapeHtml(campaign.campaignName)} ${renderCampaignSigil(campaign.campaignName)}</span>
+          <span class="investigator-with-icon">
+            <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+            ${renderClassIcon(campaign.investigatorFaction)}
+            <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span>
+          </span>
+        </div>
+        ${campaign.friends.length > 0 ? `<p class="detail-friends">Friends: ${escapeHtml(campaign.friends.join(", "))}</p>` : ""}
+        ${campaign.notes ? `<p class="detail-notes">${escapeHtml(campaign.notes)}</p>` : ""}
+        <p class="experience-total detail-total-xp">Total xp: ${getTotalExperience(campaign)}</p>
+      </div>
+      <div class="actions detail-actions">
+        <button class="arkham-button subtle" id="edit-campaign-button">Edit</button>
+        ${campaign.isActive ? `<button class="arkham-button" id="detail-add-experience-button">Add experience</button>` : ""}
+        <button class="arkham-button danger" id="delete-campaign-button">Delete campaign</button>
+      </div>`;
+
+  appElement.innerHTML = `
+    <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
+    <div class="form-card campaign-detail-card">
+      ${infoSection}
     </div>
     ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP ${renderExperienceBreakdown(campaign)}</p><ul class="experience-log">${logItems}</ul>` : ""}`;
 
@@ -238,17 +252,34 @@ function showCampaignDetail() {
     event.preventDefault();
     showOverview();
   });
-  document.getElementById("edit-campaign-form").addEventListener("submit", (event) => {
-    event.preventDefault();
-    handleEditCampaign(campaign);
-  });
-  const addExperienceButton = document.getElementById("detail-add-experience-button");
-  if (addExperienceButton !== null) {
-    addExperienceButton.addEventListener("click", (event) => {
+
+  if (editMode) {
+    document.getElementById("edit-campaign-form").addEventListener("submit", (event) => {
       event.preventDefault();
-      gainPageReturnTarget = "detail";
-      showGainExperience();
+      handleEditCampaign(campaign);
     });
+    document.getElementById("cancel-edit-campaign-button").addEventListener("click", () => {
+      showCampaignDetail(false);
+    });
+  } else {
+    document.getElementById("edit-campaign-button").addEventListener("click", () => {
+      showCampaignDetail(true);
+    });
+    document.getElementById("delete-campaign-button").addEventListener("click", () => {
+      if (confirm("Delete this campaign and all its experience? This cannot be undone.")) {
+        campaigns = campaigns.filter((candidate) => candidate.id !== campaign.id);
+        persistCampaigns();
+        showOverview();
+      }
+    });
+    const addExperienceButton = document.getElementById("detail-add-experience-button");
+    if (addExperienceButton !== null) {
+      addExperienceButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        gainPageReturnTarget = "detail";
+        showGainExperience();
+      });
+    }
   }
   bindExperienceEntryEditing(campaign);
 }
@@ -267,7 +298,7 @@ function handleEditCampaign(campaign) {
     const trimmedNotes = notes.trim();
     campaign.notes = trimmedNotes.length > 0 ? trimmedNotes : null;
     persistCampaigns();
-    showCampaignDetail();
+    showCampaignDetail(false);
   } catch (error) {
     alert(error.message);
   }

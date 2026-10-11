@@ -12,6 +12,7 @@ import { SignUpHandler } from "../application/use-cases/auth/sign-up-handler";
 import { SignInHandler } from "../application/use-cases/auth/sign-in-handler";
 import { UpdateExperienceHandler } from "../application/use-cases/update-experience/update-experience-handler";
 import { UpdateCampaignHandler } from "../application/use-cases/update-campaign/update-campaign-handler";
+import { DeleteCampaignHandler } from "../application/use-cases/delete-campaign/delete-campaign-handler";
 import { openDatabase } from "../infrastructure/persistence/database";
 import { SqliteCampaignRepository } from "../infrastructure/persistence/sqlite-campaign-repository";
 import { SqliteUserRepository } from "../infrastructure/persistence/sqlite-user-repository";
@@ -32,6 +33,7 @@ export interface DependencyContainer {
   updateExperienceHandler: UpdateExperienceHandler;
   changeCampaignStatusHandler: ChangeCampaignStatusHandler;
   updateCampaignHandler: UpdateCampaignHandler;
+  deleteCampaignHandler: DeleteCampaignHandler;
   signUpHandler: SignUpHandler;
   signInHandler: SignInHandler;
 }
@@ -59,6 +61,7 @@ export function buildDependencyContainer(
     campaignRepository
   );
   const updateCampaignHandler = new UpdateCampaignHandler(campaignRepository);
+  const deleteCampaignHandler = new DeleteCampaignHandler(campaignRepository);
   const signUpHandler = new SignUpHandler(
     userRepository,
     passwordHasher,
@@ -78,6 +81,7 @@ export function buildDependencyContainer(
     updateExperienceHandler,
     changeCampaignStatusHandler,
     updateCampaignHandler,
+    deleteCampaignHandler,
     signUpHandler,
     signInHandler,
   };

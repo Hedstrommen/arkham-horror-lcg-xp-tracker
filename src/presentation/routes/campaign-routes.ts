@@ -3,6 +3,7 @@ import { CreateCampaignHandler } from "../../application/use-cases/create-campai
 import { GainExperienceHandler } from "../../application/use-cases/gain-experience/gain-experience-handler";
 import { UpdateExperienceHandler } from "../../application/use-cases/update-experience/update-experience-handler";
 import { UpdateCampaignHandler } from "../../application/use-cases/update-campaign/update-campaign-handler";
+import { DeleteCampaignHandler } from "../../application/use-cases/delete-campaign/delete-campaign-handler";
 import { renderCampaignDetailPage } from "../views/campaign-detail-view";
 import { ListCampaignsHandler } from "../../application/use-cases/list-campaigns/list-campaigns-handler";
 import { CampaignRepository } from "../../domain/campaign/campaign-repository";
@@ -35,6 +36,7 @@ export function createCampaignRoutes(
   arkhamCatalog: ArkhamCatalog,
   changeCampaignStatusHandler: ChangeCampaignStatusHandler,
   updateCampaignHandler: UpdateCampaignHandler,
+  deleteCampaignHandler: DeleteCampaignHandler,
   requireSignedInUser: (
     request: Request,
     response: Response
@@ -123,7 +125,8 @@ export function createCampaignRoutes(
       response.status(404).send("Campaign not found.");
       return;
     }
-    response.send(renderCampaignDetailPage(campaign));
+    const editMode = request.query.edit === "1";
+    response.send(renderCampaignDetailPage(campaign, editMode));
   });
 
   router.post(
@@ -166,6 +169,25 @@ export function createCampaignRoutes(
         }
         response.status(400).send(renderCampaignDetailPage(campaign));
       }
+    }
+  );
+
+  router.post(
+    "/campaigns/:campaignId/delete",
+    (request: Request, response: Response) => {
+      const ownerId = requireSignedInUser(request, response);
+      if (ownerId === null) {
+        return;
+      }
+      try {
+        deleteCampaignHandler.handle({
+          campaignId: String(request.params.campaignId),
+          ownerId,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+      response.redirect("/");
     }
   );
 
