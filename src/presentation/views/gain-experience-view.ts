@@ -55,14 +55,21 @@ export function renderGainExperiencePage(
     )
     .join("");
 
+  const breakdownParts = Object.entries(campaign.getExperienceBreakdownByKind())
+    .map(([kind, amount]) => `${kind.charAt(0).toUpperCase() + kind.slice(1)} xp: ${amount}`)
+    .join(" &middot; ");
+  const breakdownLine = breakdownParts.length > 0
+    ? `<span class="experience-breakdown">${breakdownParts}</span>`
+    : "";
+
   const experienceLog = campaign.getExperienceLog().length > 0
     ? `<h2>Experience log</h2>
-       <p class="experience-total experience-log-total">Total: ${campaign.getTotalExperience()} XP</p>
+       <p class="experience-total experience-log-total">Total: ${campaign.getTotalExperience()} XP ${breakdownLine}</p>
        <ul class="experience-log">${experienceLogItems}</ul>`
     : "";
 
   const content = `
-    <a class="back-link" href="/">&larr; Back to campaigns</a>
+    <a class="back-link" href="/campaigns/${escapeHtml(campaign.id)}">&larr; Back to campaign</a>
     <div class="campaign-context">
       <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter}</span></span>
       <span class="investigator-with-icon">

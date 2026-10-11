@@ -84,8 +84,12 @@ export function createCampaignRoutes(
 
     try {
       const chapterNumber = Number(request.body.chapter);
+      const titleInput = typeof request.body.title === "string"
+        ? request.body.title.trim()
+        : "";
       createCampaignHandler.handle({
         ownerId,
+        title: titleInput.length > 0 ? titleInput : null,
         campaignName: String(request.body.campaignName ?? ""),
         chapter: chapterNumber === 2 ? 2 : 1,
         friends,
@@ -216,7 +220,7 @@ export function createCampaignRoutes(
           experienceTitle: titleInput,
           notes: notesInput.length > 0 ? notesInput : null,
         });
-        response.redirect("/");
+        response.redirect(`/campaigns/${campaign.id}`);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);

@@ -13,7 +13,11 @@ export class CreateCampaignHandler {
   ) {}
 
   public handle(command: CreateCampaignCommand): string {
-    const title = CampaignTitle.fromUserInput(command.campaignName);
+    const title = CampaignTitle.fromUserInput(
+      command.title !== null && command.title.trim().length > 0
+        ? command.title
+        : command.campaignName
+    );
     const chapter = command.chapter === 2 ? 2 : 1;
 
     const investigatorDefinition =
