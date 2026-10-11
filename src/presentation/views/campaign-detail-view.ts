@@ -118,6 +118,7 @@ export function renderCampaignDetailPage(
         ${campaign.friends.length > 0 ? `<p class="detail-friends">Friends: ${escapeHtml(campaign.friends.join(", "))}</p>` : ""}
         ${campaign.notes ? `<p class="detail-notes">${escapeHtml(campaign.notes)}</p>` : ""}
         <p class="experience-total detail-total-xp">Total xp: ${campaign.getTotalExperience()}</p>
+        ${breakdownLine}
       </div>
       <div class="actions detail-actions">
         <a class="arkham-button subtle" href="/campaigns/${escapeHtml(campaign.id)}?edit=1">Edit</a>

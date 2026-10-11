@@ -234,6 +234,7 @@ function showCampaignDetail(editMode = false) {
         ${campaign.friends.length > 0 ? `<p class="detail-friends">Friends: ${escapeHtml(campaign.friends.join(", "))}</p>` : ""}
         ${campaign.notes ? `<p class="detail-notes">${escapeHtml(campaign.notes)}</p>` : ""}
         <p class="experience-total detail-total-xp">Total xp: ${getTotalExperience(campaign)}</p>
+        ${renderExperienceBreakdown(campaign)}
       </div>
       <div class="actions detail-actions">
         <button class="arkham-button subtle" id="edit-campaign-button">Edit</button>
