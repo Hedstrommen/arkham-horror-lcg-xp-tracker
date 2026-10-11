@@ -14,7 +14,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(
   "/styles",
-  express.static(path.join(__dirname, "presentation", "styles"))
+  express.static(path.join(__dirname, "..", "..", "src", "presentation", "styles"))
 );
 app.use(
   createAuthRoutes(
