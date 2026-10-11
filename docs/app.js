@@ -1,13 +1,6 @@
 const STORAGE_KEY = "arkham-xp-tracker.campaigns";
 const EXPORT_FILE_NAME = "arkham-xp-tracker-data.json";
-const FACTION_SYMBOLS = {
-  guardian: "🛡",
-  seeker: "🔍",
-  rogue: "🗡",
-  mystic: "🔮",
-  survivor: "🪓",
-  neutral: "◯",
-};
+
 
 let campaigns = [];
 let arkhamCatalog = { campaigns: [], investigators: [] };
@@ -88,7 +81,7 @@ function showOverview() {
 }
 
 function renderCampaignCard(campaign) {
-  const factionSymbol = FACTION_SYMBOLS[campaign.investigatorFaction] ?? FACTION_SYMBOLS.neutral;
+  const factionSymbol = renderClassIcon(campaign.investigatorFaction);
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive"}" data-campaign-id="${escapeHtml(campaign.id)}">
       <div class="title-row">
@@ -153,9 +146,14 @@ function showCreateCampaign() {
     <form class="form-card" id="create-campaign-form">
       <h2>Create a new campaign</h2>
       <div class="form-field">
-        <label for="campaignName">Campaign</label>
+        <label for="campaignName">Campaign
+          <span class="custom-campaign-toggle">
+            <input type="checkbox" id="custom-campaign-checkbox">
+            <label for="custom-campaign-checkbox" class="custom-campaign-label">Custom</label>
+          </span>
+        </label>
         <select id="campaignName" required>${campaignOptions}</select>
-        <button type="button" class="arkham-button subtle" id="add-custom-campaign-button">Add custom campaign</button>
+        <input type="text" id="customCampaignName" class="hidden" maxlength="120" placeholder="Write your own campaign name">
       </div>
       <div class="form-field hidden" id="custom-campaign-field">
         <label for="customCampaignName">Custom campaign name</label>
@@ -175,7 +173,7 @@ function showCreateCampaign() {
         <input type="text" id="investigator-search" placeholder="Search by name..." autocomplete="off">
         <div class="faction-filter" id="faction-filter">
           ${["all", "guardian", "seeker", "rogue", "mystic", "survivor"]
-            .map((faction) => `<button type="button" class="faction-filter-button ${faction === "all" ? "selected" : ""}" data-faction="${faction}">${faction === "all" ? "All" : FACTION_SYMBOLS[faction] + " " + faction}</button>`)
+            .map((faction) => `<button type="button" class="faction-filter-button ${faction === "all" ? "selected" : ""}" data-faction="${faction}">${faction === "all" ? "All" : renderClassIcon(faction) + " " + faction}</button>`)
             .join("")}
         </div>
         <select id="investigatorId" required size="6"></select>
@@ -193,12 +191,18 @@ function showCreateCampaign() {
     event.preventDefault();
     handleCreateCampaign();
   });
-  document.getElementById("add-custom-campaign-button").addEventListener("click", () => {
-    const selectElement = document.getElementById("campaignName");
-    const customField = document.getElementById("custom-campaign-field");
-    selectElement.classList.add("hidden");
-    customField.classList.remove("hidden");
-    document.getElementById("add-custom-campaign-button").classList.add("hidden");
+  document.getElementById("custom-campaign-checkbox").addEventListener("change", (event) => {
+    const isCustom = event.target.checked;
+    document.getElementById("campaignName").classList.toggle("hidden", isCustom);
+    document.getElementById("customCampaignName").classList.toggle("hidden", !isCustom);
+    if (isCustom) {
+      document.getElementById("campaignName").removeAttribute("required");
+      document.getElementById("customCampaignName").setAttribute("required", "required");
+      document.getElementById("customCampaignName").focus();
+    } else {
+      document.getElementById("customCampaignName").removeAttribute("required");
+      document.getElementById("campaignName").setAttribute("required", "required");
+    }
   });
 
   const searchInputElement = document.getElementById("investigator-search");
@@ -228,14 +232,13 @@ function renderInvestigatorOptions() {
   investigatorSelect.innerHTML = matchingInvestigators
     .map((investigator) =>
       `<option value="${escapeHtml(investigator.investigatorId)}">
-        ${FACTION_SYMBOLS[investigator.factionName] ?? ""} ${escapeHtml(investigator.investigatorName)} (${escapeHtml(investigator.factionName)})
+        ${escapeHtml(investigator.investigatorName)} (${escapeHtml(investigator.factionName)})
       </option>`)
     .join("");
 }
 
 function handleCreateCampaign() {
-  const customField = document.getElementById("custom-campaign-field");
-  const isCustomCampaign = !customField.classList.contains("hidden");
+  const isCustomCampaign = document.getElementById("custom-campaign-checkbox").checked;
   const campaignName = isCustomCampaign
     ? document.getElementById("customCampaignName").value
     : document.getElementById("campaignName").value;
@@ -293,7 +296,7 @@ function showGainExperience() {
     <div class="campaign-context">
       <span>${escapeHtml(campaign.campaignName)}</span>
       <span class="faction-icon ${escapeHtml(campaign.investigatorFaction)}">
-        <span class="faction-symbol">${FACTION_SYMBOLS[campaign.investigatorFaction] ?? FACTION_SYMBOLS.neutral}</span>
+        <span class="faction-symbol">${renderClassIcon(campaign.investigatorFaction)}</span>
         ${escapeHtml(campaign.investigatorFaction)}
       </span>
       <span>${escapeHtml(campaign.investigatorName)}</span>
