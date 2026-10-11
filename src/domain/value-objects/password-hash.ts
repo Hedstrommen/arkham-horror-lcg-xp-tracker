@@ -1,3 +1,5 @@
+import { PlainTextPassword } from "./plain-text-password";
+
 export interface PasswordHasher {
   hashPassword(plainTextPassword: PlainTextPassword): PasswordHash;
   verifyPassword(

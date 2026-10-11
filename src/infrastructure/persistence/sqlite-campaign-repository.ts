@@ -8,6 +8,7 @@ import { ExperienceType } from "../../domain/value-objects/experience-type";
 
 interface CampaignRow {
   id: string;
+  owner_id: string;
   title: string;
   campaign_name: string;
   friends: string;
@@ -36,10 +37,10 @@ export class SqliteCampaignRepository implements CampaignRepository {
   public save(campaign: Campaign): void {
     const insertCampaignStatement = this.database.prepare(`
       INSERT INTO campaigns (
-        id, title, campaign_name, friends, investigator_id,
+        id, owner_id, title, campaign_name, friends, investigator_id,
         investigator_name, investigator_faction, is_active, created_at
       ) VALUES (
-        @id, @title, @campaignName, @friends, @investigatorId,
+        @id, @ownerId, @title, @campaignName, @friends, @investigatorId,
         @investigatorName, @investigatorFaction, @isActive, @createdAt
       )
       ON CONFLICT(id) DO UPDATE SET
@@ -70,6 +71,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
     this.database.transaction(() => {
       insertCampaignStatement.run({
         id: campaign.id,
+        ownerId: campaign.ownerId,
         title: campaign.title.toString(),
         campaignName: campaign.campaignName,
         friends: JSON.stringify(campaign.friends),
@@ -98,12 +100,13 @@ export class SqliteCampaignRepository implements CampaignRepository {
     })();
   }
 
-  public findById(campaignId: string): Campaign | null {
+  public findByIdAndOwnerId(
+    campaignId: string,
+    ownerId: string
+  ): Campaign | null {
     const campaignRow = this.database
-      .prepare(
-        "SELECT * FROM campaigns WHERE id = ?"
-      )
-      .get(campaignId) as CampaignRow | undefined;
+      .prepare("SELECT * FROM campaigns WHERE id = ? AND owner_id = ?")
+      .get(campaignId, ownerId) as CampaignRow | undefined;
 
     if (campaignRow === undefined) {
       return null;
@@ -112,12 +115,14 @@ export class SqliteCampaignRepository implements CampaignRepository {
     return this.reconstituteCampaign(campaignRow);
   }
 
-  public findAllOrderedByStatusThenRecency(): Campaign[] {
+  public findAllByOwnerIdOrderedByStatusThenRecency(
+    ownerId: string
+  ): Campaign[] {
     const campaignRows = this.database
       .prepare(
-        "SELECT * FROM campaigns ORDER BY is_active DESC, created_at DESC"
+        "SELECT * FROM campaigns WHERE owner_id = ? ORDER BY is_active DESC, created_at DESC"
       )
-      .all() as CampaignRow[];
+      .all(ownerId) as CampaignRow[];
 
     return campaignRows.map((campaignRow) =>
       this.reconstituteCampaign(campaignRow)
@@ -142,6 +147,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
 
     return Campaign.reconstitute(
       campaignRow.id,
+      campaignRow.owner_id,
       CampaignTitle.fromUserInput(campaignRow.title),
       campaignRow.campaign_name,
       JSON.parse(campaignRow.friends) as string[],

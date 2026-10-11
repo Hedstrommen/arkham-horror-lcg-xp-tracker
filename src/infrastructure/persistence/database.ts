@@ -1,8 +1,17 @@
 import Database from "better-sqlite3";
 
+const CREATE_USERS_TABLE = `
+  CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL
+  )
+`;
+
 const CREATE_CAMPAIGNS_TABLE = `
   CREATE TABLE IF NOT EXISTS campaigns (
     id TEXT PRIMARY KEY,
+    owner_id TEXT NOT NULL REFERENCES users(id),
     title TEXT NOT NULL,
     campaign_name TEXT NOT NULL,
     friends TEXT NOT NULL,
@@ -26,6 +35,7 @@ const CREATE_EXPERIENCE_ENTRIES_TABLE = `
 
 export function openDatabase(databaseFilePath: string): Database.Database {
   const database = new Database(databaseFilePath);
+  database.exec(CREATE_USERS_TABLE);
   database.exec(CREATE_CAMPAIGNS_TABLE);
   database.exec(CREATE_EXPERIENCE_ENTRIES_TABLE);
   return database;
