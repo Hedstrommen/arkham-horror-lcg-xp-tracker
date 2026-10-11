@@ -10,6 +10,7 @@ interface CampaignRow {
   id: string;
   owner_id: string;
   title: string;
+  notes: string | null;
   campaign_name: string;
   friends: string;
   investigator_id: string;
@@ -37,10 +38,10 @@ export class SqliteCampaignRepository implements CampaignRepository {
   public save(campaign: Campaign): void {
     const insertCampaignStatement = this.database.prepare(`
       INSERT INTO campaigns (
-        id, owner_id, title, campaign_name, friends, investigator_id,
+        id, owner_id, title, notes, campaign_name, friends, investigator_id,
         investigator_name, investigator_faction, is_active, created_at
       ) VALUES (
-        @id, @ownerId, @title, @campaignName, @friends, @investigatorId,
+        @id, @ownerId, @title, @notes, @campaignName, @friends, @investigatorId,
         @investigatorName, @investigatorFaction, @isActive, @createdAt
       )
       ON CONFLICT(id) DO UPDATE SET
@@ -73,6 +74,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
         id: campaign.id,
         ownerId: campaign.ownerId,
         title: campaign.title.toString(),
+        notes: campaign.notes,
         campaignName: campaign.campaignName,
         friends: JSON.stringify(campaign.friends),
         investigatorId: campaign.investigatorId,
@@ -154,6 +156,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
       campaignRow.investigator_id,
       campaignRow.investigator_name,
       campaignRow.investigator_faction,
+      campaignRow.notes,
       campaignRow.is_active === 1,
       experienceLog
     );
