@@ -2,11 +2,39 @@
 
 A web app for tracking investigator experience across [Arkham Horror: The Card Game](https://www.fantasyflightgames.com/productline/arkham-horror-the-card-game/) campaigns, with an aesthetic inspired by the game's parchment-and-ink artwork. Card and campaign names follow [ArkhamDB](https://arkhamdb.com/).
 
+## Two ways to use it
+
+### 1. No-install web app (GitHub Pages)
+
+The `docs/` folder contains a fully client-side version — no server, no accounts, no install. Data is saved in your browser's localStorage, and the **Export my data / Import data** buttons move your campaigns between devices as a JSON file.
+
+To publish it on GitHub Pages:
+
+1. On GitHub, open **Settings → Pages** for this repository
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**
+3. Choose the **main** branch and the **/ (root)** folder — actually select **/docs** if offered, otherwise the root works because the app lives in `docs/`
+4. Save, and within a minute or two the app is live at `https://<your-username>.github.io/arkham-horror-lcg-xp-tracker/`
+
+Anyone with that link can use the app on their own device — each browser keeps its own campaigns, entirely separate from anyone else's.
+
+To try it locally without publishing: `npx serve docs` and open the printed URL.
+
+### 2. Self-hosted server app (optional)
+
+The full Express/SQLite application in `src/` is kept intact for future hosting with accounts and multi-user isolation (see PR #4). Run it with:
+
+```bash
+npm install
+npm run dev
+```
+
 ## Features
 
 - **Overview page** listing all campaigns: title, campaign name, investigator, class icon, total XP, and active/finished status. Active campaigns are always sorted to the top.
 - **Create new campaign** page: pick a campaign and your investigator from dropdowns (seeded from ArkhamDB data), and name the friends you play with.
 - **Gain XP** page per campaign: record Scenario / Interlude / Card experience with an amount and optional notes.
+- **Mark finished / Reactivate** toggle per campaign (finished ones drop to the bottom and lose their Gain XP button).
+- **Export / Import** your data as a JSON file (client-side version) to move campaigns between devices or keep a backup.
 
 ## Getting started
 
