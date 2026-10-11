@@ -412,5 +412,35 @@
     "investigatorName": "Isabelle Barnes",
     "factionName": "survivor",
     "chapter": 2
+  },
+  {
+    "investigatorId": "ch2-deck-tommy",
+    "investigatorName": "Tommy Muldoon",
+    "factionName": "guardian",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "ch2-deck-carolyn",
+    "investigatorName": "Carolyn Fern",
+    "factionName": "seeker",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "ch2-deck-andre",
+    "investigatorName": "André Patel",
+    "factionName": "rogue",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "ch2-deck-marie",
+    "investigatorName": "Marie Lambeau",
+    "factionName": "mystic",
+    "chapter": 2
+  },
+  {
+    "investigatorId": "ch2-deck-miguel",
+    "investigatorName": "Miguel de la Cruz",
+    "factionName": "survivor",
+    "chapter": 2
   }
 ]
