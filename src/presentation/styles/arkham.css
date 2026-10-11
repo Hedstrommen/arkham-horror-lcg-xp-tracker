@@ -455,3 +455,42 @@ main {
   font-style: italic;
   color: var(--ink-soft);
 }
+
+.custom-campaign-toggle {
+  float: right;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: normal;
+  text-transform: none;
+}
+
+.custom-campaign-toggle input[type="checkbox"] {
+  width: 0.85rem;
+  height: 0.85rem;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+
+.custom-campaign-label {
+  cursor: pointer;
+  color: var(--teal-deep);
+}
+
+.class-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.12em;
+}
+
+.faction-symbol .class-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.faction-filter-button .class-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: -0.15em;
+}
