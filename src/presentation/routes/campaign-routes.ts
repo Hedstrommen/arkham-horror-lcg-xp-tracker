@@ -69,8 +69,9 @@ export function createCampaignRoutes(
     const friendsInput = typeof request.body.friends === "string"
       ? request.body.friends
       : "";
-    const previouslyEnteredTitle =
-      typeof request.body.title === "string" ? request.body.title : "";
+    const notesInput = typeof request.body.notes === "string"
+      ? request.body.notes.trim()
+      : "";
     const friends: string[] = friendsInput
       .split(",")
       .map((friend: string) => friend.trim())
@@ -79,10 +80,10 @@ export function createCampaignRoutes(
     try {
       createCampaignHandler.handle({
         ownerId,
-        title: String(request.body.title ?? ""),
         campaignName: String(request.body.campaignName ?? ""),
         friends,
         investigatorId: String(request.body.investigatorId ?? ""),
+        notes: notesInput.length > 0 ? notesInput : null,
       });
       response.redirect("/");
     } catch (error) {
@@ -92,7 +93,7 @@ export function createCampaignRoutes(
           arkhamCatalog.listCampaigns(),
           arkhamCatalog.listInvestigators(),
           errorMessage,
-          previouslyEnteredTitle
+          ""
         )
       );
     }

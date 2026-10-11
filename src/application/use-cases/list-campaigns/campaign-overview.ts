@@ -5,5 +5,6 @@ export interface CampaignOverview {
   investigatorName: string;
   investigatorFaction: string;
   totalExperience: number;
+  notes: string | null;
   isActive: boolean;
 }

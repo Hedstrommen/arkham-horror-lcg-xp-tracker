@@ -13,6 +13,7 @@ const CREATE_CAMPAIGNS_TABLE = `
     id TEXT PRIMARY KEY,
     owner_id TEXT NOT NULL REFERENCES users(id),
     title TEXT NOT NULL,
+    notes TEXT,
     campaign_name TEXT NOT NULL,
     friends TEXT NOT NULL,
     investigator_id TEXT NOT NULL,

@@ -10,6 +10,7 @@ export class Campaign {
     public readonly id: string,
     public readonly ownerId: string,
     public readonly title: CampaignTitle,
+    public readonly notes: string | null,
     public readonly campaignName: string,
     public readonly friends: string[],
     public readonly investigatorId: string,
@@ -29,12 +30,14 @@ export class Campaign {
     friends: string[],
     investigatorId: string,
     investigatorName: string,
-    investigatorFaction: string
+    investigatorFaction: string,
+    notes: string | null
   ): Campaign {
     return new Campaign(
       id,
       ownerId,
       title,
+      notes,
       campaignName,
       friends,
       investigatorId,
@@ -54,6 +57,7 @@ export class Campaign {
     investigatorId: string,
     investigatorName: string,
     investigatorFaction: string,
+    notes: string | null,
     isActive: boolean,
     experienceLog: ExperienceEntry[]
   ): Campaign {
@@ -61,6 +65,7 @@ export class Campaign {
       id,
       ownerId,
       title,
+      notes,
       campaignName,
       friends,
       investigatorId,

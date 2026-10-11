@@ -13,14 +13,7 @@ export class CreateCampaignHandler {
   ) {}
 
   public handle(command: CreateCampaignCommand): string {
-    const title = CampaignTitle.fromUserInput(command.title);
-
-    const campaignDefinition = this.arkhamCatalog.findCampaignByName(
-      command.campaignName
-    );
-    if (campaignDefinition === null) {
-      throw new Error(`Unknown campaign: ${command.campaignName}`);
-    }
+    const title = CampaignTitle.fromUserInput(command.campaignName);
 
     const investigatorDefinition =
       this.arkhamCatalog.findInvestigatorById(command.investigatorId);
@@ -32,11 +25,12 @@ export class CreateCampaignHandler {
       this.idGenerator.generateCampaignId(),
       command.ownerId,
       title,
-      campaignDefinition.campaignName,
+      title.toString(),
       command.friends.filter((friend) => friend.trim().length > 0),
       investigatorDefinition.investigatorId,
       investigatorDefinition.investigatorName,
-      investigatorDefinition.factionName
+      investigatorDefinition.factionName,
+      command.notes
     );
 
     this.campaignRepository.save(campaign);

@@ -14,6 +14,7 @@ export class ListCampaignsHandler {
         investigatorName: campaign.investigatorName,
         investigatorFaction: campaign.investigatorFaction,
         totalExperience: campaign.getTotalExperience(),
+        notes: campaign.notes,
         isActive: campaign.getIsActive(),
       }));
   }

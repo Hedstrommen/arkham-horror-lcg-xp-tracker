@@ -40,21 +40,23 @@ function parseExperienceAmount(rawAmount) {
 
 function createCampaign(
   id,
-  title,
   campaignName,
   friends,
   investigatorId,
   investigatorName,
-  investigatorFaction
+  investigatorFaction,
+  notes
 ) {
+  const trimmedNotes = String(notes ?? "").trim();
   return {
     id,
-    title: parseCampaignTitle(title),
-    campaignName,
+    title: parseCampaignTitle(campaignName),
+    campaignName: parseCampaignTitle(campaignName),
     friends,
     investigatorId,
     investigatorName,
     investigatorFaction,
+    notes: trimmedNotes.length > 0 ? trimmedNotes : null,
     isActive: true,
     createdAt: new Date().toISOString(),
     experienceLog: [],
