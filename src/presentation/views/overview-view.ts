@@ -13,7 +13,7 @@ export function renderOverviewPage(campaigns: CampaignOverview[]): string {
     <p class="empty-state">No campaigns yet. The mythos awaits — start one!</p>`;
 
   const content = `
-    <div class="new-campaign-bar">
+    <div class="toolbar">
       <a class="arkham-button" href="/campaigns/new">Create new campaign</a>
     </div>
     ${campaigns.length > 0 ? campaignList : emptyState}`;
@@ -32,7 +32,7 @@ function renderCampaignCard(campaign: CampaignOverview): string {
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive"}">
       <div class="title-row">
-        <h2><a href="/campaigns/${escapeHtml(campaign.campaignId)}">${escapeHtml(campaign.title)}</a></h2>
+        <h2>${escapeHtml(campaign.title)}</h2>
         ${statusBadge}
       </div>
       <div class="details-row">
@@ -41,8 +41,10 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         <span>${escapeHtml(campaign.investigatorName)}</span>
         <span class="experience-total">${campaign.totalExperience} XP</span>
       </div>
-      ${campaign.isActive ? renderGainExperienceButton(campaign.campaignId) : ""}
-      ${renderStatusToggle(campaign)}
+      <div class="actions">
+        ${campaign.isActive ? renderGainExperienceButton(campaign.campaignId) : ""}
+        ${renderStatusToggle(campaign)}
+      </div>
     </li>`;
 }
 
