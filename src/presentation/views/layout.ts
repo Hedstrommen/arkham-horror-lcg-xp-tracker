@@ -20,6 +20,9 @@ export function renderLayout(pageTitle: string, content: string): string {
   <header class="page-header">
     <h1>Arkham XP Tracker</h1>
     <p>The night is dark, and experience points are precious.</p>
+    <form method="post" action="/auth/sign-out">
+      <button class="sign-out-button" type="submit">Sign out</button>
+    </form>
   </header>
   <main>
     ${content}
