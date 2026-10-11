@@ -29,13 +29,13 @@ describe("Campaign", () => {
     campaign.gainExperience(
       ExperienceType.fromUserInput("scenario"),
       ExperiencePoints.fromUserInput(3),
-      "1",
+      "Scenario 1",
       null
     );
     campaign.gainExperience(
-      ExperienceType.fromUserInput("card"),
+      ExperienceType.fromUserInput("weakness"),
       ExperiencePoints.fromUserInput(2),
-      "Weakness",
+      "Amnesia",
       "Bought Deduction"
     );
     expect(campaign.getTotalExperience()).toBe(5);
@@ -56,5 +56,11 @@ describe("Campaign", () => {
 
   it("rejects an unknown experience kind", () => {
     expect(() => ExperienceType.fromUserInput("ritual")).toThrow();
+  });
+
+  it("accepts the four experience kinds", () => {
+    for (const kind of ["scenario", "interlude", "weakness", "permanent"]) {
+      expect(ExperienceType.fromUserInput(kind).getKind()).toBe(kind);
+    }
   });
 });

@@ -79,14 +79,14 @@ export class Campaign {
   public gainExperience(
     experienceType: ExperienceType,
     experiencePoints: ExperiencePoints,
-    experienceSuffix: string | null,
+    experienceTitle: string,
     notes: string | null
   ): ExperienceEntry {
     const entry = new ExperienceEntry(
       this.generateEntryId(),
       experienceType,
       experiencePoints,
-      experienceSuffix,
+      experienceTitle,
       notes
     );
     this.experienceLog.push(entry);
@@ -97,7 +97,7 @@ export class Campaign {
     entryId: string,
     experienceType: ExperienceType,
     experiencePoints: ExperiencePoints,
-    experienceSuffix: string | null,
+    experienceTitle: string,
     notes: string | null
   ): void {
     const entry = this.experienceLog.find(
@@ -108,7 +108,7 @@ export class Campaign {
     }
     entry.experienceType = experienceType;
     entry.experiencePoints = experiencePoints;
-    entry.experienceSuffix = experienceSuffix;
+    entry.experienceTitle = experienceTitle;
     entry.notes = notes;
   }
 

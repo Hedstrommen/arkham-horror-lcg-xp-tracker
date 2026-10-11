@@ -25,7 +25,7 @@ interface ExperienceEntryRow {
   campaign_id: string;
   experience_kind: string;
   experience_amount: number;
-  experience_suffix: string | null;
+  experience_title: string;
   notes: string | null;
 }
 
@@ -57,9 +57,9 @@ export class SqliteCampaignRepository implements CampaignRepository {
 
     const insertExperienceEntryStatement = this.database.prepare(`
       INSERT INTO experience_entries (
-        id, campaign_id, experience_kind, experience_amount, experience_suffix, notes
+        id, campaign_id, experience_kind, experience_amount, experience_title, notes
       ) VALUES (
-        @id, @campaignId, @experienceKind, @experienceAmount, @experienceSuffix, @notes
+        @id, @campaignId, @experienceKind, @experienceAmount, @experienceTitle, @notes
       )
       ON CONFLICT(id) DO NOTHING
     `);
@@ -92,7 +92,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
           campaignId: campaign.id,
           experienceKind: entry.experienceType.getKind(),
           experienceAmount: entry.experiencePoints.getAmount(),
-          experienceSuffix: entry.experienceSuffix,
+          experienceTitle: entry.experienceTitle,
           notes: entry.notes,
         });
       }
@@ -145,7 +145,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
         entryRow.id,
         ExperienceType.fromUserInput(entryRow.experience_kind),
         ExperiencePoints.fromUserInput(entryRow.experience_amount),
-        entryRow.experience_suffix,
+        entryRow.experience_title,
         entryRow.notes
       )
     );

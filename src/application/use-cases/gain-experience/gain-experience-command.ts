@@ -3,6 +3,6 @@ export interface GainExperienceCommand {
   ownerId: string;
   experienceKind: string;
   experienceAmount: number;
-  experienceSuffix: string | null;
+  experienceTitle: string;
   notes: string | null;
 }

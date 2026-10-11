@@ -21,7 +21,7 @@ export function renderGainExperiencePage(
       <li class="experience-entry">
         <details>
           <summary>
-            <span class="entry-kind">${escapeHtml(entry.experienceType.getDisplayName())}${entry.experienceSuffix ? " " + escapeHtml(entry.experienceSuffix) : ""}: +${entry.experiencePoints.getAmount()} XP</span>
+            <span class="entry-kind">${escapeHtml(entry.experienceType.getDisplayName())} &mdash; ${escapeHtml(entry.experienceTitle)}: +${entry.experiencePoints.getAmount()} XP</span>
             ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
           </summary>
           <form class="edit-entry-form" method="post" action="/campaigns/${escapeHtml(campaign.id)}/experience/${escapeHtml(entry.id)}">
@@ -30,7 +30,8 @@ export function renderGainExperiencePage(
               <select id="edit-${escapeHtml(entry.id)}-kind" name="experienceKind" required>
                 <option value="scenario" ${entry.experienceType.getKind() === "scenario" ? "selected" : ""}>Scenario</option>
                 <option value="interlude" ${entry.experienceType.getKind() === "interlude" ? "selected" : ""}>Interlude</option>
-                <option value="card" ${entry.experienceType.getKind() === "card" ? "selected" : ""}>Card experience</option>
+                <option value="weakness" ${entry.experienceType.getKind() === "weakness" ? "selected" : ""}>Weakness</option>
+                <option value="permanent" ${entry.experienceType.getKind() === "permanent" ? "selected" : ""}>Permanent</option>
               </select>
             </div>
             <div class="form-field">
@@ -38,8 +39,8 @@ export function renderGainExperiencePage(
               <input type="number" id="edit-${escapeHtml(entry.id)}-amount" name="experienceAmount" min="0" step="1" required value="${entry.experiencePoints.getAmount()}">
             </div>
             <div class="form-field">
-              <label for="edit-${escapeHtml(entry.id)}-suffix">Suffix</label>
-              <input type="text" id="edit-${escapeHtml(entry.id)}-suffix" name="experienceSuffix" maxlength="60" value="${entry.experienceSuffix ? escapeHtml(entry.experienceSuffix) : ""}">
+              <label for="edit-${escapeHtml(entry.id)}-title">Title</label>
+              <input type="text" id="edit-${escapeHtml(entry.id)}-title" name="experienceTitle" maxlength="120" required value="${escapeHtml(entry.experienceTitle)}">
             </div>
             <div class="form-field">
               <label for="edit-${escapeHtml(entry.id)}-notes">Notes</label>
@@ -78,17 +79,17 @@ export function renderGainExperiencePage(
         <select id="experienceKind" name="experienceKind" required>
           <option value="scenario">Scenario</option>
           <option value="interlude">Interlude</option>
-          <option value="card">Card experience</option>
+          <option value="weakness">Weakness</option>
+          <option value="permanent">Permanent</option>
         </select>
+      </div>
+      <div class="form-field">
+        <label for="experienceTitle">Title</label>
+        <input type="text" id="experienceTitle" name="experienceTitle" maxlength="120" required placeholder="e.g. &quot;Scenario 1&quot;, &quot;Interlude scenario 1/2&quot;, &quot;Prelude day 1&quot;, &quot;In the thick of it&quot;">
       </div>
       <div class="form-field">
         <label for="experienceAmount">Experience (numbers)</label>
         <input type="number" id="experienceAmount" name="experienceAmount" min="0" step="1" required>
-      </div>
-      <div class="form-field">
-        <label for="experienceSuffix">Suffix (optional)</label>
-        <input type="text" id="experienceSuffix" name="experienceSuffix" maxlength="60" placeholder="e.g. 1, Second day, Weakness">
-        <p class="form-hint">Add a label after the experience type, like "Scenario 1" or "Weakness".</p>
       </div>
       <div class="form-field">
         <label for="notes">Notes</label>
