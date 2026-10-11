@@ -757,3 +757,23 @@ img.class-icon {
 .campaign-view-info .experience-breakdown {
   margin: 0.1rem 0 0.25rem;
 }
+
+.detail-total-xp {
+  margin-top: 0.9rem;
+}
+
+.campaign-view-info .experience-breakdown {
+  margin: 0.3rem 0 0.25rem;
+}
+
+.campaign-card.finished .title-row {
+  margin-bottom: 0.15rem;
+}
+
+.finished-actions {
+  margin-top: 0.25rem;
+}
+
+.campaign-card.finished {
+  padding: 0.65rem 1.25rem;
+}

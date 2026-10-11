@@ -115,14 +115,8 @@ function showOverview() {
 
 function renderCampaignCard(campaign) {
 
-  return `
-    <li class="campaign-card ${campaign.isActive ? "" : "inactive"}" data-campaign-id="${escapeHtml(campaign.id)}">
-      <div class="title-row">
-        <h2>${escapeHtml(campaign.title)}</h2>
-        <span class="status-badge ${campaign.isActive ? "active" : ""}">
-          ${campaign.isActive ? "Active" : "Finished"}
-        </span>
-      </div>
+  const detailsRow = campaign.isActive
+    ? `
       <div class="details-row">
         <span class="campaign-name-with-sigil">${escapeHtml(campaign.campaignName)} ${renderCampaignSigil(campaign.campaignName)}</span>
         <span class="investigator-with-icon">
@@ -136,9 +130,26 @@ function renderCampaignCard(campaign) {
       <div class="actions">
         <button class="arkham-button view-campaign-button">View campaign</button>
         <button class="arkham-button subtle status-toggle-button">
-          ${campaign.isActive ? "Mark finished" : "Reactivate"}
+          Mark finished
         </button>
+      </div>`
+    : `
+      <div class="actions finished-actions">
+        <button class="arkham-button view-campaign-button">View campaign</button>
+        <button class="arkham-button subtle status-toggle-button">
+          Reactivate
+        </button>
+      </div>`;
+
+  return `
+    <li class="campaign-card ${campaign.isActive ? "" : "inactive finished"}" data-campaign-id="${escapeHtml(campaign.id)}">
+      <div class="title-row">
+        <h2>${escapeHtml(campaign.title)}</h2>
+        <span class="status-badge ${campaign.isActive ? "active" : ""}">
+          ${campaign.isActive ? "Active" : "Finished"}
+        </span>
       </div>
+      ${detailsRow}
     </li>`;
 }
 
@@ -420,7 +431,10 @@ function renderInvestigatorOptions() {
     const matchesChapter = selectedInvestigatorChapters.includes(investigator.chapter ?? 1);
     return matchesSearch && matchesFaction && matchesChapter;
   });
-  pickListElement.innerHTML = matchingInvestigators
+  const sortedInvestigators = [...matchingInvestigators].sort((first, second) =>
+    first.investigatorName.localeCompare(second.investigatorName)
+  );
+  pickListElement.innerHTML = sortedInvestigators
     .map((investigator) => `
       <button type="button"
               class="investigator-pick ${investigator.investigatorId === selectedInvestigatorId ? "selected" : ""}"
