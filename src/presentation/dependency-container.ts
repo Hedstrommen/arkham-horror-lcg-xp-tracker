@@ -3,6 +3,7 @@ import { ArkhamCatalog } from "../application/ports/arkham-catalog";
 import { CampaignRepository } from "../domain/campaign/campaign-repository";
 import { CreateCampaignHandler } from "../application/use-cases/create-campaign/create-campaign-handler";
 import { GainExperienceHandler } from "../application/use-cases/gain-experience/gain-experience-handler";
+import { ChangeCampaignStatusHandler } from "../application/use-cases/change-campaign-status/change-campaign-status-handler";
 import { ListCampaignsHandler } from "../application/use-cases/list-campaigns/list-campaigns-handler";
 import { openDatabase } from "../infrastructure/persistence/database";
 import { SqliteCampaignRepository } from "../infrastructure/persistence/sqlite-campaign-repository";
@@ -15,6 +16,7 @@ export interface DependencyContainer {
   listCampaignsHandler: ListCampaignsHandler;
   createCampaignHandler: CreateCampaignHandler;
   gainExperienceHandler: GainExperienceHandler;
+  changeCampaignStatusHandler: ChangeCampaignStatusHandler;
 }
 
 export function buildDependencyContainer(
@@ -32,6 +34,9 @@ export function buildDependencyContainer(
     idGenerator
   );
   const gainExperienceHandler = new GainExperienceHandler(campaignRepository);
+  const changeCampaignStatusHandler = new ChangeCampaignStatusHandler(
+    campaignRepository
+  );
 
   return {
     campaignRepository,
@@ -39,5 +44,6 @@ export function buildDependencyContainer(
     listCampaignsHandler,
     createCampaignHandler,
     gainExperienceHandler,
+    changeCampaignStatusHandler,
   };
 }
