@@ -63,8 +63,8 @@ export class SqliteCampaignRepository implements CampaignRepository {
 
     const deleteOrphanedEntriesStatement = this.database.prepare(`
       DELETE FROM experience_entries
-      WHERE campaign_id = @campaignId
-        AND id NOT IN (@keptEntryIds)
+      WHERE campaign_id = ?
+        AND id NOT IN (SELECT value FROM json_each(?))
     `);
 
     this.database.transaction(() => {
@@ -91,12 +91,10 @@ export class SqliteCampaignRepository implements CampaignRepository {
         });
       }
 
-      if (experienceLog.length > 0) {
-        deleteOrphanedEntriesStatement.run({
-          campaignId: campaign.id,
-          keptEntryIds: experienceLog.map((entry) => entry.id),
-        });
-      }
+      deleteOrphanedEntriesStatement.run(
+        campaign.id,
+        JSON.stringify(experienceLog.map((entry) => entry.id))
+      );
     })();
   }
 
