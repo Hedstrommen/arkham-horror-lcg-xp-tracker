@@ -127,8 +127,9 @@ function renderCampaignCard(campaign) {
         <span class="investigator-with-icon">
           <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
           ${renderClassIcon(campaign.investigatorFaction)}
+          <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span>
         </span>
-        <span class="experience-total">${getTotalExperience(campaign)} XP</span>
+        <span class="experience-total total-xp-cell">Total xp: ${getTotalExperience(campaign)}</span>
       </div>
       ${campaign.notes ? `<p class="campaign-notes">${escapeHtml(campaign.notes)}</p>` : ""}
       <div class="actions">
@@ -149,14 +150,20 @@ function bindCampaignCardEvents(campaign) {
   if (cardElement === null) {
     return;
   }
+  cardElement.addEventListener("click", () => {
+    selectedCampaignId = campaign.id;
+    showCampaignDetail();
+  });
   const gainButton = cardElement.querySelector(".gain-experience-button");
   if (gainButton !== null) {
-    gainButton.addEventListener("click", () => {
+    gainButton.addEventListener("click", (event) => {
+      event.stopPropagation();
       selectedCampaignId = campaign.id;
       showGainExperience();
     });
   }
-  cardElement.querySelector(".status-toggle-button").addEventListener("click", () => {
+  cardElement.querySelector(".status-toggle-button").addEventListener("click", (event) => {
+    event.stopPropagation();
     if (campaign.isActive) {
       markFinished(campaign);
     } else {
@@ -165,6 +172,93 @@ function bindCampaignCardEvents(campaign) {
     persistCampaigns();
     showOverview();
   });
+}
+
+
+function showCampaignDetail() {
+  const campaign = campaigns.find((candidate) => candidate.id === selectedCampaignId);
+  if (campaign === undefined) {
+    showOverview();
+    return;
+  }
+  const appElement = document.getElementById("app");
+  const logItems = campaign.experienceLog
+    .map(
+      (entry) => `
+      <li class="experience-entry" data-entry-id="${escapeHtml(entry.id)}">
+        <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)} &mdash; ${escapeHtml(entry.experienceTitle)}: +${entry.experienceAmount} XP</span>
+        ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
+      </li>`
+    )
+    .join("");
+
+  appElement.innerHTML = `
+    <a class="back-link" href="#" id="back-to-overview-link">&larr; Back to campaigns</a>
+    <div class="form-card campaign-detail-card">
+      <form id="edit-campaign-form">
+        <div class="form-field">
+          <label for="campaign-detail-title">Title</label>
+          <input type="text" id="campaign-detail-title" maxlength="120" required value="${escapeHtml(campaign.title)}">
+        </div>
+        <div class="detail-info-row">
+          <span>${escapeHtml(campaign.campaignName)} <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span></span>
+          <span class="investigator-with-icon">
+            <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
+            ${renderClassIcon(campaign.investigatorFaction)}
+            <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span>
+          </span>
+        </div>
+        <div class="form-field">
+          <label for="campaign-detail-friends">Friends</label>
+          <input type="text" id="campaign-detail-friends" value="${escapeHtml(campaign.friends.join(", "))}">
+        </div>
+        <div class="form-field">
+          <label for="campaign-detail-notes">Notes</label>
+          <textarea id="campaign-detail-notes">${campaign.notes ? escapeHtml(campaign.notes) : ""}</textarea>
+        </div>
+        <div class="actions">
+          <button class="arkham-button" type="submit">Save changes</button>
+          ${campaign.isActive ? `<a class="arkham-button" href="#" id="detail-add-experience-button">Add experience</a>` : ""}
+        </div>
+      </form>
+    </div>
+    ${campaign.experienceLog.length > 0 ? `<h2>Experience log</h2><p class="experience-total experience-log-total">Total: ${getTotalExperience(campaign)} XP</p><ul class="experience-log">${logItems}</ul>` : ""}`;
+
+  document.getElementById("back-to-overview-link").addEventListener("click", (event) => {
+    event.preventDefault();
+    showOverview();
+  });
+  document.getElementById("edit-campaign-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    handleEditCampaign(campaign);
+  });
+  const addExperienceButton = document.getElementById("detail-add-experience-button");
+  if (addExperienceButton !== null) {
+    addExperienceButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      showGainExperience();
+    });
+  }
+}
+
+function handleEditCampaign(campaign) {
+  const title = document.getElementById("campaign-detail-title").value;
+  const friendsInput = document.getElementById("campaign-detail-friends").value;
+  const notes = document.getElementById("campaign-detail-notes").value;
+
+  try {
+    campaign.title = parseCampaignTitle(title);
+    campaign.friends = friendsInput
+      .split(",")
+      .map((friend) => friend.trim())
+      .filter((friend) => friend.length > 0);
+    const trimmedNotes = notes.trim();
+    campaign.notes = trimmedNotes.length > 0 ? trimmedNotes : null;
+    persistCampaigns();
+    showCampaignDetail();
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
 function showCreateCampaign() {
@@ -380,7 +474,7 @@ function showGainExperience() {
         <input type="text" id="experienceTitle" maxlength="120" required placeholder='e.g. "Scenario 1", "Interlude scenario 1/2", "Prelude day 1", "In the thick of it"'>
       </div>
       <div class="form-field">
-        <label for="experienceAmount">Experience (numbers)</label>
+        <label for="experienceAmount">Experience</label>
         <input type="number" id="experienceAmount" min="0" step="1" required>
       </div>
       <div class="form-field">
@@ -433,7 +527,7 @@ function showEditExperience(campaign, entry) {
           <input type="text" id="edit-experienceTitle" maxlength="120" required value="${escapeHtml(entry.experienceTitle)}">
         </div>
         <div class="form-field">
-          <label for="edit-experienceAmount">Experience (numbers)</label>
+          <label for="edit-experienceAmount">Experience</label>
           <input type="number" id="edit-experienceAmount" min="0" step="1" required value="${entry.experienceAmount}">
         </div>
         <div class="form-field">

@@ -75,7 +75,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
       insertCampaignStatement.run({
         id: campaign.id,
         ownerId: campaign.ownerId,
-        title: campaign.title.toString(),
+        title: campaign.getTitle().toString(),
         notes: campaign.notes,
         campaignName: campaign.campaignName,
         chapter: campaign.chapter,

@@ -35,7 +35,7 @@ export function renderGainExperiencePage(
               </select>
             </div>
             <div class="form-field">
-              <label for="edit-${escapeHtml(entry.id)}-amount">Experience (numbers)</label>
+              <label for="edit-${escapeHtml(entry.id)}-amount">Experience</label>
               <input type="number" id="edit-${escapeHtml(entry.id)}-amount" name="experienceAmount" min="0" step="1" required value="${entry.experiencePoints.getAmount()}">
             </div>
             <div class="form-field">
@@ -69,7 +69,7 @@ export function renderGainExperiencePage(
         ${factionIcon}
         <span class="investigator-name ${escapeHtml(campaign.investigatorFaction)}">${escapeHtml(campaign.investigatorName)}</span>
       </span>
-      <span class="experience-total">${escapeHtml(campaign.title.toString())} - ${campaign.getTotalExperience()} XP</span>
+      <span class="experience-total">${escapeHtml(campaign.getTitle().toString())} - ${campaign.getTotalExperience()} XP</span>
     </div>
     ${errorBlock}
     <form class="form-card" method="post" action="/campaigns/${escapeHtml(campaign.id)}/gain-experience">
@@ -88,7 +88,7 @@ export function renderGainExperiencePage(
         <input type="text" id="experienceTitle" name="experienceTitle" maxlength="120" required placeholder="e.g. &quot;Scenario 1&quot;, &quot;Interlude scenario 1/2&quot;, &quot;Prelude day 1&quot;, &quot;In the thick of it&quot;">
       </div>
       <div class="form-field">
-        <label for="experienceAmount">Experience (numbers)</label>
+        <label for="experienceAmount">Experience</label>
         <input type="number" id="experienceAmount" name="experienceAmount" min="0" step="1" required>
       </div>
       <div class="form-field">

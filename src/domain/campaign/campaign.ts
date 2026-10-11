@@ -9,11 +9,11 @@ export class Campaign {
   private constructor(
     public readonly id: string,
     public readonly ownerId: string,
-    public readonly title: CampaignTitle,
-    public readonly notes: string | null,
+    private title: CampaignTitle,
+    public notes: string | null,
     public readonly campaignName: string,
     public readonly chapter: number,
-    public readonly friends: string[],
+    public friends: string[],
     public readonly investigatorId: string,
     public readonly investigatorName: string,
     public readonly investigatorFaction: string,
@@ -130,6 +130,19 @@ export class Campaign {
 
   public getIsActive(): boolean {
     return this.isActive;
+  }
+
+  public rename(newTitle: CampaignTitle): void {
+    this.title = newTitle;
+  }
+
+  public getTitle(): CampaignTitle {
+    return this.title;
+  }
+
+  public updateFriendsAndNotes(friends: string[], notes: string | null): void {
+    this.friends = friends;
+    this.notes = notes;
   }
 
   public markFinished(): void {

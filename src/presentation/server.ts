@@ -32,6 +32,7 @@ app.use(
     container.campaignRepository,
     container.arkhamCatalog,
     container.changeCampaignStatusHandler,
+    container.updateCampaignHandler,
     requireSignedInUser
   )
 );

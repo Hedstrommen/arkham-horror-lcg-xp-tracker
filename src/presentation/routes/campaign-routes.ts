@@ -2,6 +2,8 @@ import { Request, Response, Router } from "express";
 import { CreateCampaignHandler } from "../../application/use-cases/create-campaign/create-campaign-handler";
 import { GainExperienceHandler } from "../../application/use-cases/gain-experience/gain-experience-handler";
 import { UpdateExperienceHandler } from "../../application/use-cases/update-experience/update-experience-handler";
+import { UpdateCampaignHandler } from "../../application/use-cases/update-campaign/update-campaign-handler";
+import { renderCampaignDetailPage } from "../views/campaign-detail-view";
 import { ListCampaignsHandler } from "../../application/use-cases/list-campaigns/list-campaigns-handler";
 import { CampaignRepository } from "../../domain/campaign/campaign-repository";
 import { ArkhamCatalog } from "../../application/ports/arkham-catalog";
@@ -32,6 +34,7 @@ export function createCampaignRoutes(
   campaignRepository: CampaignRepository,
   arkhamCatalog: ArkhamCatalog,
   changeCampaignStatusHandler: ChangeCampaignStatusHandler,
+  updateCampaignHandler: UpdateCampaignHandler,
   requireSignedInUser: (
     request: Request,
     response: Response
@@ -102,6 +105,65 @@ export function createCampaignRoutes(
       );
     }
   });
+
+  router.get("/campaigns/:campaignId", (request: Request, response: Response) => {
+    const ownerId = requireSignedInUser(request, response);
+    if (ownerId === null) {
+      return;
+    }
+    const campaign = campaignRepository.findByIdAndOwnerId(
+      String(request.params.campaignId),
+      ownerId
+    );
+    if (campaign === null) {
+      response.status(404).send("Campaign not found.");
+      return;
+    }
+    response.send(renderCampaignDetailPage(campaign));
+  });
+
+  router.post(
+    "/campaigns/:campaignId/edit",
+    (request: Request, response: Response) => {
+      const ownerId = requireSignedInUser(request, response);
+      if (ownerId === null) {
+        return;
+      }
+      const friendsInput = typeof request.body.friends === "string"
+        ? request.body.friends
+        : "";
+      const friends: string[] = friendsInput
+        .split(",")
+        .map((friend: string) => friend.trim())
+        .filter((friend: string) => friend.length > 0);
+      const notesInput = typeof request.body.notes === "string"
+        ? request.body.notes.trim()
+        : "";
+
+      try {
+        updateCampaignHandler.handle({
+          campaignId: String(request.params.campaignId),
+          ownerId,
+          title: String(request.body.title ?? ""),
+          friends,
+          notes: notesInput.length > 0 ? notesInput : null,
+        });
+        response.redirect(`/campaigns/${String(request.params.campaignId)}`);
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        const campaign = campaignRepository.findByIdAndOwnerId(
+          String(request.params.campaignId),
+          ownerId
+        );
+        if (campaign === null) {
+          response.status(404).send("Campaign not found.");
+          return;
+        }
+        response.status(400).send(renderCampaignDetailPage(campaign));
+      }
+    }
+  );
 
   router.get(
     "/campaigns/:campaignId/gain-experience",
