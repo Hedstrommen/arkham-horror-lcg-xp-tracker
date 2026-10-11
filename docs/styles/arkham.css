@@ -366,3 +366,52 @@ main {
   color: var(--ink-soft);
   padding: 3rem 0;
 }
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.toolbar .arkham-button {
+  font-size: 1.15rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.toolbar .utility-group {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.toolbar .utility-group .arkham-button {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  letter-spacing: 0.02em;
+}
+
+.campaign-card .title-row h2 {
+  font-size: 1.45rem;
+}
+
+.campaign-card .details-row {
+  font-size: 1.15rem;
+}
+
+.faction-symbol {
+  width: 28px;
+  height: 28px;
+  font-size: 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.campaign-card .actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
