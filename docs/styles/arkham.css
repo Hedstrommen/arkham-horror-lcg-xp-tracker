@@ -593,3 +593,29 @@ img.class-icon {
   margin: 0;
   width: 100%;
 }
+
+.experience-entry summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem;
+  border-radius: 3px;
+}
+
+.experience-entry summary:hover {
+  background: rgba(26, 92, 88, 0.10);
+}
+
+.experience-entry details[open] summary {
+  background: rgba(26, 92, 88, 0.16);
+}
+
+.edit-entry-form {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  background: rgba(253, 246, 227, 0.65);
+}

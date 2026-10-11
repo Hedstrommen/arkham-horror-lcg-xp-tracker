@@ -29,11 +29,13 @@ describe("Campaign", () => {
     campaign.gainExperience(
       ExperienceType.fromUserInput("scenario"),
       ExperiencePoints.fromUserInput(3),
+      "1",
       null
     );
     campaign.gainExperience(
       ExperienceType.fromUserInput("card"),
       ExperiencePoints.fromUserInput(2),
+      "Weakness",
       "Bought Deduction"
     );
     expect(campaign.getTotalExperience()).toBe(5);

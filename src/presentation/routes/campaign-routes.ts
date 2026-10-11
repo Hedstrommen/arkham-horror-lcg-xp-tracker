@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { CreateCampaignHandler } from "../../application/use-cases/create-campaign/create-campaign-handler";
 import { GainExperienceHandler } from "../../application/use-cases/gain-experience/gain-experience-handler";
+import { UpdateExperienceHandler } from "../../application/use-cases/update-experience/update-experience-handler";
 import { ListCampaignsHandler } from "../../application/use-cases/list-campaigns/list-campaigns-handler";
 import { CampaignRepository } from "../../domain/campaign/campaign-repository";
 import { ArkhamCatalog } from "../../application/ports/arkham-catalog";
@@ -27,6 +28,7 @@ export function createCampaignRoutes(
   listCampaignsHandler: ListCampaignsHandler,
   createCampaignHandler: CreateCampaignHandler,
   gainExperienceHandler: GainExperienceHandler,
+  updateExperienceHandler: UpdateExperienceHandler,
   campaignRepository: CampaignRepository,
   arkhamCatalog: ArkhamCatalog,
   changeCampaignStatusHandler: ChangeCampaignStatusHandler,
@@ -137,6 +139,9 @@ export function createCampaignRoutes(
       const notesInput = typeof request.body.notes === "string"
         ? request.body.notes.trim()
         : "";
+      const suffixInput = typeof request.body.experienceSuffix === "string"
+        ? request.body.experienceSuffix.trim()
+        : "";
 
       try {
         gainExperienceHandler.handle({
@@ -144,9 +149,52 @@ export function createCampaignRoutes(
           ownerId,
           experienceKind: String(request.body.experienceKind ?? ""),
           experienceAmount: Number(request.body.experienceAmount),
+          experienceSuffix: suffixInput.length > 0 ? suffixInput : null,
           notes: notesInput.length > 0 ? notesInput : null,
         });
         response.redirect("/");
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        response.status(400).send(renderGainExperiencePage(campaign, errorMessage));
+      }
+    }
+  );
+
+  router.post(
+    "/campaigns/:campaignId/experience/:entryId",
+    (request: Request, response: Response) => {
+      const ownerId = requireSignedInUser(request, response);
+      if (ownerId === null) {
+        return;
+      }
+      const campaign = campaignRepository.findByIdAndOwnerId(
+        String(request.params.campaignId),
+        ownerId
+      );
+      if (campaign === null) {
+        response.status(404).send("Campaign not found.");
+        return;
+      }
+
+      const notesInput = typeof request.body.notes === "string"
+        ? request.body.notes.trim()
+        : "";
+      const suffixInput = typeof request.body.experienceSuffix === "string"
+        ? request.body.experienceSuffix.trim()
+        : "";
+
+      try {
+        updateExperienceHandler.handle({
+          campaignId: campaign.id,
+          ownerId,
+          entryId: String(request.params.entryId),
+          experienceKind: String(request.body.experienceKind ?? ""),
+          experienceAmount: Number(request.body.experienceAmount),
+          experienceSuffix: suffixInput.length > 0 ? suffixInput : null,
+          notes: notesInput.length > 0 ? notesInput : null,
+        });
+        response.redirect(`/campaigns/${campaign.id}/gain-experience`);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);

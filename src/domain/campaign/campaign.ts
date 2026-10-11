@@ -79,16 +79,37 @@ export class Campaign {
   public gainExperience(
     experienceType: ExperienceType,
     experiencePoints: ExperiencePoints,
+    experienceSuffix: string | null,
     notes: string | null
   ): ExperienceEntry {
     const entry = new ExperienceEntry(
       this.generateEntryId(),
       experienceType,
       experiencePoints,
+      experienceSuffix,
       notes
     );
     this.experienceLog.push(entry);
     return entry;
+  }
+
+  public updateExperienceEntry(
+    entryId: string,
+    experienceType: ExperienceType,
+    experiencePoints: ExperiencePoints,
+    experienceSuffix: string | null,
+    notes: string | null
+  ): void {
+    const entry = this.experienceLog.find(
+      (candidateEntry) => candidateEntry.id === entryId
+    );
+    if (entry === undefined) {
+      throw new Error(`No experience entry found with id ${entryId}.`);
+    }
+    entry.experienceType = experienceType;
+    entry.experiencePoints = experiencePoints;
+    entry.experienceSuffix = experienceSuffix;
+    entry.notes = notes;
   }
 
   public getTotalExperience(): number {

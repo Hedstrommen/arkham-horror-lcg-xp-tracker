@@ -63,17 +63,39 @@ function createCampaign(
   };
 }
 
-function gainExperience(campaign, experienceKind, experienceAmount, notes) {
+function parseExperienceSuffix(rawSuffix) {
+  const trimmedSuffix = String(rawSuffix ?? "").trim();
+  if (trimmedSuffix.length > 60) {
+    throw new Error("Experience suffix cannot exceed 60 characters.");
+  }
+  return trimmedSuffix.length > 0 ? trimmedSuffix : null;
+}
+
+function gainExperience(campaign, experienceKind, experienceAmount, notes, experienceSuffix) {
   const kind = parseExperienceKind(experienceKind);
   const amount = parseExperienceAmount(experienceAmount);
+  const suffix = parseExperienceSuffix(experienceSuffix);
   const trimmedNotes = String(notes ?? "").trim();
   campaign.experienceLog.push({
     id: `${campaign.id}-entry-${campaign.experienceLog.length + 1}`,
     experienceKind: kind,
     experienceAmount: amount,
+    experienceSuffix: suffix,
     notes: trimmedNotes.length > 0 ? trimmedNotes : null,
     recordedAt: new Date().toISOString(),
   });
+}
+
+function updateExperienceEntry(campaign, entryId, experienceKind, experienceAmount, experienceSuffix, notes) {
+  const entry = campaign.experienceLog.find((candidate) => candidate.id === entryId);
+  if (entry === undefined) {
+    throw new Error("That experience entry does not exist.");
+  }
+  entry.experienceKind = parseExperienceKind(experienceKind);
+  entry.experienceAmount = parseExperienceAmount(experienceAmount);
+  entry.experienceSuffix = parseExperienceSuffix(experienceSuffix);
+  const trimmedNotes = String(notes ?? "").trim();
+  entry.notes = trimmedNotes.length > 0 ? trimmedNotes : null;
 }
 
 function getTotalExperience(campaign) {

@@ -5,6 +5,7 @@ const EXPORT_FILE_NAME = "arkham-xp-tracker-data.json";
 let campaigns = [];
 let arkhamCatalog = { campaigns: [], investigators: [] };
 let selectedCampaignId = null;
+let selectedInvestigatorId = null;
 
 document.addEventListener("DOMContentLoaded", startApp);
 
@@ -221,20 +222,35 @@ function showCreateCampaign() {
   renderInvestigatorOptions();
 }
 
-let selectedInvestigatorId = null;
-
 function renderInvestigatorOptions() {
   const searchString = document.getElementById("investigator-search").value.trim().toLowerCase();
   const selectedFaction = document.querySelector(".faction-filter-button.selected")?.dataset.faction ?? "all";
-  const investigatorSelect = document.getElementById("investigatorId");
+  const pickListElement = document.getElementById("investigator-pick-list");
   const matchingInvestigators = arkhamCatalog.investigators.filter((investigator) => {
     const matchesSearch = searchString.length === 0
       || investigator.investigatorName.toLowerCase().includes(searchString);
     const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
     return matchesSearch && matchesFaction;
   });
-  investigatorSelect.innerHTML = matchingInvestigators
-
+  pickListElement.innerHTML = matchingInvestigators
+    .map((investigator) => `
+      <button type="button"
+              class="investigator-pick ${investigator.investigatorId === selectedInvestigatorId ? "selected" : ""}"
+              data-investigator-id="${escapeHtml(investigator.investigatorId)}">
+        <span class="investigator-name ${escapeHtml(investigator.factionName)}">${escapeHtml(investigator.investigatorName)}</span>
+        ${renderClassIcon(investigator.factionName)}
+      </button>`)
+    .join("");
+  for (const pickButton of pickListElement.querySelectorAll(".investigator-pick")) {
+    pickButton.addEventListener("click", () => {
+      selectedInvestigatorId = pickButton.dataset.investigatorId;
+      document.getElementById("investigatorId").value = selectedInvestigatorId;
+      for (const otherButton of pickListElement.querySelectorAll(".investigator-pick")) {
+        otherButton.classList.remove("selected");
+      }
+      pickButton.classList.add("selected");
+    });
+  }
 }
 
 function handleCreateCampaign() {
