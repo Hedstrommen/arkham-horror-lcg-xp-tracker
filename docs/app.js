@@ -62,10 +62,12 @@ function showOverview() {
   const content = `
     <div class="toolbar">
       <a class="arkham-button" href="#" id="create-campaign-link">Create new campaign</a>
-      <button class="arkham-button subtle" id="export-data-button">Export my data</button>
-      <label class="arkham-button subtle import-label">Import data
-        <input type="file" id="import-data-input" accept=".json,application/json" hidden>
-      </label>
+      <span class="utility-group">
+        <button class="arkham-button subtle" id="export-data-button">Export</button>
+        <label class="arkham-button subtle import-label">Import
+          <input type="file" id="import-data-input" accept=".json,application/json" hidden>
+        </label>
+      </span>
     </div>
     ${
       campaigns.length > 0
@@ -90,7 +92,7 @@ function renderCampaignCard(campaign) {
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive"}" data-campaign-id="${escapeHtml(campaign.id)}">
       <div class="title-row">
-        <h2><a href="#" class="open-campaign-link">${escapeHtml(campaign.title)}</a></h2>
+        <h2>${escapeHtml(campaign.title)}</h2>
         <span class="status-badge ${campaign.isActive ? "active" : ""}">
           ${campaign.isActive ? "Active" : "Finished"}
         </span>
@@ -121,11 +123,6 @@ function bindCampaignCardEvents(campaign) {
   if (cardElement === null) {
     return;
   }
-  cardElement.querySelector(".open-campaign-link").addEventListener("click", (event) => {
-    event.preventDefault();
-    selectedCampaignId = campaign.id;
-    showGainExperience();
-  });
   const gainButton = cardElement.querySelector(".gain-experience-button");
   if (gainButton !== null) {
     gainButton.addEventListener("click", () => {
