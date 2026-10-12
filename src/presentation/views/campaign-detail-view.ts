@@ -72,7 +72,7 @@ export function renderCampaignDetailPage(
     .join("");
 
   const breakdownParts = Object.entries(campaign.getExperienceBreakdownByKind())
-    .map(([kind, amount]) => `${kind.charAt(0).toUpperCase() + kind.slice(1)} xp: ${amount}`)
+    .map(([kind, amount]) => `${kind.charAt(0).toUpperCase() + kind.slice(1)}: ${amount}`)
     .join(" &middot; ");
   const breakdownLine = breakdownParts.length > 0
     ? `<span class="experience-breakdown">${breakdownParts}</span>`
@@ -116,8 +116,7 @@ export function renderCampaignDetailPage(
         </div>
         ${campaign.friends.length > 0 ? `<p class="detail-friends">Friends: ${escapeHtml(campaign.friends.join(", "))}</p>` : ""}
         ${campaign.notes ? `<p class="detail-notes">${escapeHtml(campaign.notes)}</p>` : ""}
-        <p class="experience-total detail-total-xp">Total xp: ${campaign.getTotalExperience()}</p>
-        ${breakdownLine}
+        <p class="detail-total-xp">Total XP: ${campaign.getTotalExperience()} ${breakdownLine}</p>
       </div>
       <div class="actions detail-actions">
         <a class="arkham-button subtle" href="/campaigns/${escapeHtml(campaign.id)}?edit=1">Edit</a>
