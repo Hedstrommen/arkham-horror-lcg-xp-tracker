@@ -133,21 +133,22 @@ function renderCampaignCard(campaign) {
           Mark finished
         </button>
       </div>`
-    : `
-      <div class="actions finished-actions">
-        <button class="arkham-button view-campaign-button">View campaign</button>
-        <button class="arkham-button subtle status-toggle-button">
-          Reactivate
-        </button>
-      </div>`;
+    : "";
 
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive finished"}" data-campaign-id="${escapeHtml(campaign.id)}">
-      <div class="title-row">
+      <div class="title-row finished-title-row">
         <h2>${escapeHtml(campaign.title)}</h2>
         <span class="status-badge ${campaign.isActive ? "active" : ""}">
           ${campaign.isActive ? "Active" : "Finished"}
         </span>
+        ${campaign.isActive ? "" : `
+        <span class="finished-buttons">
+          <button class="arkham-button view-campaign-button">View campaign</button>
+          <button class="arkham-button subtle status-toggle-button">
+            Reactivate
+          </button>
+        </span>`}
       </div>
       ${detailsRow}
     </li>`;
@@ -189,7 +190,7 @@ function bindCampaignCardEvents(campaign) {
 function renderExperienceBreakdown(campaign) {
   const breakdown = getExperienceBreakdown(campaign);
   const parts = Object.entries(breakdown)
-    .map(([kind, amount]) => `${EXPERIENCE_DISPLAY_NAMES(kind)} xp: ${amount}`);
+    .map(([kind, amount]) => `${EXPERIENCE_DISPLAY_NAMES(kind)}: ${amount}`);
   if (parts.length === 0) {
     return "";
   }
@@ -244,8 +245,7 @@ function showCampaignDetail(editMode = false) {
         </div>
         ${campaign.friends.length > 0 ? `<p class="detail-friends">Friends: ${escapeHtml(campaign.friends.join(", "))}</p>` : ""}
         ${campaign.notes ? `<p class="detail-notes">${escapeHtml(campaign.notes)}</p>` : ""}
-        <p class="experience-total detail-total-xp">Total xp: ${getTotalExperience(campaign)}</p>
-        ${renderExperienceBreakdown(campaign)}
+        <p class="detail-total-xp">Total XP: ${getTotalExperience(campaign)} ${renderExperienceBreakdown(campaign)}</p>
       </div>
       <div class="actions detail-actions">
         <button class="arkham-button subtle" id="edit-campaign-button">Edit</button>

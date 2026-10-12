@@ -43,17 +43,22 @@ function renderCampaignCard(campaign: CampaignOverview): string {
         <a class="arkham-button" href="/campaigns/${escapeHtml(campaign.campaignId)}">View campaign</a>
         ${renderStatusToggle(campaign)}
       </div>`
+    : "";
+
+  const finishedButtons = campaign.isActive
+    ? ""
     : `
-      <div class="actions finished-actions">
-        <a class="arkham-button" href="/campaigns/${escapeHtml(campaign.campaignId)}">View campaign</a>
-        ${renderStatusToggle(campaign)}
-      </div>`;
+        <span class="finished-buttons">
+          <a class="arkham-button" href="/campaigns/${escapeHtml(campaign.campaignId)}">View campaign</a>
+          ${renderStatusToggle(campaign)}
+        </span>`;
 
   return `
     <li class="campaign-card ${campaign.isActive ? "" : "inactive finished"}">
-      <div class="title-row">
+      <div class="title-row finished-title-row">
         <h2><a href="/campaigns/${escapeHtml(campaign.campaignId)}">${escapeHtml(campaign.title)}</a></h2>
         ${statusBadge}
+        ${finishedButtons}
       </div>
       ${detailsRow}
     </li>`;
