@@ -27,12 +27,8 @@ function renderCampaignCard(campaign: CampaignOverview): string {
     ? '<span class="status-badge active">Active</span>'
     : '<span class="status-badge">Finished</span>';
 
-  return `
-    <li class="campaign-card ${campaign.isActive ? "" : "inactive"}">
-      <div class="title-row">
-        <h2><a href="/campaigns/${escapeHtml(campaign.campaignId)}">${escapeHtml(campaign.title)}</a></h2>
-        ${statusBadge}
-      </div>
+  const detailsRow = campaign.isActive
+    ? `
       <div class="details-row">
         <span class="campaign-name-with-sigil">${escapeHtml(campaign.campaignName)} ${renderCampaignSigil(campaign.campaignName)}</span>
         <span class="investigator-with-icon">
@@ -46,7 +42,20 @@ function renderCampaignCard(campaign: CampaignOverview): string {
       <div class="actions">
         <a class="arkham-button" href="/campaigns/${escapeHtml(campaign.campaignId)}">View campaign</a>
         ${renderStatusToggle(campaign)}
+      </div>`
+    : `
+      <div class="actions finished-actions">
+        <a class="arkham-button" href="/campaigns/${escapeHtml(campaign.campaignId)}">View campaign</a>
+        ${renderStatusToggle(campaign)}
+      </div>`;
+
+  return `
+    <li class="campaign-card ${campaign.isActive ? "" : "inactive finished"}">
+      <div class="title-row">
+        <h2><a href="/campaigns/${escapeHtml(campaign.campaignId)}">${escapeHtml(campaign.title)}</a></h2>
+        ${statusBadge}
       </div>
+      ${detailsRow}
     </li>`;
 }
 

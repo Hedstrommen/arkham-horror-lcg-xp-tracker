@@ -117,6 +117,8 @@ export function renderCreateCampaignPage(
           const matchesFaction = selectedFaction === "all" || investigator.factionName === selectedFaction;
           const matchesChapter = checkedChapters("investigator").includes(investigator.chapter);
           return matchesSearch && matchesFaction && matchesChapter;
+        }).sort(function (first, second) {
+          return first.investigatorName.localeCompare(second.investigatorName);
         });
         investigatorSelect.innerHTML = matchingInvestigators
           .map(function (investigator) {
