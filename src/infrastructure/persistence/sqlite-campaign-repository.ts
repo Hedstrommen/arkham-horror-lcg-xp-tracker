@@ -5,6 +5,7 @@ import { ExperienceEntry } from "../../domain/campaign/experience-entry";
 import { CampaignTitle } from "../../domain/value-objects/campaign-title";
 import { ExperiencePoints } from "../../domain/value-objects/experience-points";
 import { ExperienceType } from "../../domain/value-objects/experience-type";
+import { Friend } from "../../domain/value-objects/friend";
 
 interface CampaignRow {
   id: string;
@@ -28,6 +29,27 @@ interface ExperienceEntryRow {
   experience_amount: number;
   experience_title: string;
   notes: string | null;
+  friend_amounts: string;
+}
+
+
+function parseLegacyFriends(rawFriends: unknown): Friend[] {
+  const friends: Friend[] = [];
+  for (const rawFriend of Array.isArray(rawFriends) ? rawFriends : []) {
+    if (typeof rawFriend === "string") {
+      if (rawFriend.trim().length > 0) {
+        friends.push({ name: rawFriend, investigatorId: null, investigatorName: null, investigatorFaction: null });
+      }
+      continue;
+    }
+    friends.push({
+      name: String(rawFriend?.name ?? "").trim(),
+      investigatorId: rawFriend?.investigatorId ?? null,
+      investigatorName: rawFriend?.investigatorName ?? null,
+      investigatorFaction: rawFriend?.investigatorFaction ?? null,
+    });
+  }
+  return friends.filter((friend) => friend.name.length > 0);
 }
 
 export class SqliteCampaignRepository implements CampaignRepository {
@@ -58,9 +80,9 @@ export class SqliteCampaignRepository implements CampaignRepository {
 
     const insertExperienceEntryStatement = this.database.prepare(`
       INSERT INTO experience_entries (
-        id, campaign_id, experience_kind, experience_amount, experience_title, notes
+        id, campaign_id, experience_kind, experience_amount, experience_title, notes, friend_amounts
       ) VALUES (
-        @id, @campaignId, @experienceKind, @experienceAmount, @experienceTitle, @notes
+        @id, @campaignId, @experienceKind, @experienceAmount, @experienceTitle, @notes, @friendAmounts
       )
       ON CONFLICT(id) DO NOTHING
     `);
@@ -96,6 +118,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
           experienceAmount: entry.experiencePoints.getAmount(),
           experienceTitle: entry.experienceTitle,
           notes: entry.notes,
+          friendAmounts: JSON.stringify(entry.friendAmounts ?? {}),
         });
       }
 
@@ -157,7 +180,8 @@ export class SqliteCampaignRepository implements CampaignRepository {
         ExperienceType.fromUserInput(entryRow.experience_kind),
         ExperiencePoints.fromUserInput(entryRow.experience_amount),
         entryRow.experience_title,
-        entryRow.notes
+        entryRow.notes,
+        JSON.parse(entryRow.friend_amounts ?? "{}") as Record<string, number>
       )
     );
 
@@ -167,7 +191,7 @@ export class SqliteCampaignRepository implements CampaignRepository {
       CampaignTitle.fromUserInput(campaignRow.title),
       campaignRow.campaign_name,
       campaignRow.chapter,
-      JSON.parse(campaignRow.friends) as string[],
+      parseLegacyFriends(JSON.parse(campaignRow.friends)),
       campaignRow.investigator_id,
       campaignRow.investigator_name,
       campaignRow.investigator_faction,

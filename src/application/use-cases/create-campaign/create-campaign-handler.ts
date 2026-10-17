@@ -32,7 +32,7 @@ export class CreateCampaignHandler {
       title,
       title.toString(),
       chapter,
-      command.friends.filter((friend) => friend.trim().length > 0),
+      command.friends.filter((friend) => friend.name.trim().length > 0),
       investigatorDefinition.investigatorId,
       investigatorDefinition.investigatorName,
       investigatorDefinition.factionName,

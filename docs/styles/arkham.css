@@ -1,25 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap");
+
 :root {
-  --teal-deep: #0f3d3e;
-  --teal: #1a5c58;
-  --teal-bright: #2e7d78;
-  --teal-soft: #d6e5e0;
-  --night: #15100b;
-  --night-soft: #241b12;
-  --gold-deep: #8a6a2a;
-  --parchment: #efe3c8;
-  --parchment-dark: #d9c69a;
-  --ink: #221a12;
-  --ink-soft: #4a3c2c;
+  --abyss: #0b1410;
+  --abyss-soft: #14231b;
+  --abyss-panel: #1a2e24;
+  --verdigris-deep: #14332a;
+  --verdigris: #1e4d3c;
+  --verdigris-bright: #2f6b53;
+  --patina: #5e8f77;
+  --gold: #c9a227;
+  --gold-bright: #e6c96a;
+  --gold-pale: #f0dfae;
+  --gold-deep: #8a6d1d;
+  --bone: #e8e0c8;
+  --ink: #efe6cf;
+  --ink-soft: #bfb894;
   --blood: #8c1f14;
   --blood-dark: #5f140d;
-  --gold: #b08d3f;
-  --gold-bright: #d4b56a;
-  --guardian: #2c6e9e;
-  --seeker: #c8842c;
-  --rogue: #4f7a4f;
-  --mystic: #6b4d9e;
-  --survivor: #a4442c;
-  --neutral: #7a7266;
+  --guardian: #7ba7c9;
+  --seeker: #d9a441;
+  --rogue: #7aa97a;
+  --mystic: #a68fd4;
+  --survivor: #c96b4c;
+  --neutral: #a09a86;
 }
 
 * {
@@ -28,61 +31,71 @@
 
 body {
   margin: 0;
-  background: var(--parchment);
+  background: var(--abyss);
   background-image:
-    radial-gradient(ellipse at top left, rgba(176, 141, 63, 0.15), transparent 55%),
-    radial-gradient(ellipse at bottom right, rgba(140, 31, 20, 0.12), transparent 55%),
-    radial-gradient(ellipse at 50% 0%, rgba(21, 16, 11, 0.14), transparent 65%);
+    radial-gradient(ellipse at 50% -10%, rgba(30, 77, 60, 0.35), transparent 55%),
+    radial-gradient(ellipse at top left, rgba(201, 162, 39, 0.07), transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(20, 51, 42, 0.5), transparent 65%);
   color: var(--ink);
-  font-family: "Palatino Linotype", Palatino, Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.05rem;
 }
 
 .page-header {
   text-align: center;
-  padding: 2.5rem 1rem 1.75rem;
-  border-bottom: 3px double var(--gold-deep);
+  padding: 3rem 1rem 2rem;
+  border-bottom: 1px solid var(--gold-deep);
   background:
-    radial-gradient(ellipse at 50% 120%, rgba(138, 106, 42, 0.25), transparent 60%),
-    radial-gradient(ellipse at 15% -20%, rgba(60, 40, 20, 0.6), transparent 55%),
-    linear-gradient(180deg, var(--night), var(--night-soft));
-  color: var(--parchment);
+    radial-gradient(ellipse at 50% 130%, rgba(201, 162, 39, 0.12), transparent 60%),
+    linear-gradient(180deg, var(--abyss-soft), var(--abyss));
 }
 
 .page-header h1 {
   margin: 0;
-  font-size: 2.6rem;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 2.8rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #6b5232;
-  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.55)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
-  background: linear-gradient(180deg, #d8c396 10%, #b8976a 50%, #8a6a3e 100%);
+  background: linear-gradient(180deg, #f0dfae 5%, var(--gold-bright) 45%, var(--gold-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.55)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
 }
 
 .page-header .title-subtitle {
   display: block;
   margin-top: 0.55rem;
-  font-size: 0.95rem;
-  letter-spacing: 0.45em;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: #9fc6bf;
+  color: var(--patina);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .page-header p {
-  margin: 0.9rem 0 0;
+  margin: 1rem 0 0;
   font-style: italic;
-  color: var(--parchment-dark);
-  opacity: 0.85;
+  color: var(--ink-soft);
 }
 
 main {
   max-width: 960px;
   margin: 0 auto;
   padding: 2rem 1rem 4rem;
+}
+
+h2 {
+  font-family: "Cinzel", Georgia, serif;
+  letter-spacing: 0.05em;
+}
+
+h3 {
+  font-family: "Cinzel", Georgia, serif;
+  letter-spacing: 0.04em;
 }
 
 .campaign-list {
@@ -94,25 +107,25 @@ main {
 }
 
 .campaign-card {
-  background: linear-gradient(160deg, #f7ecd4, var(--parchment-dark));
-  border: 1px solid var(--gold);
-  border-left: 6px solid var(--teal);
+  background: linear-gradient(165deg, var(--abyss-panel), var(--abyss-soft));
+  border: 1px solid var(--gold-deep);
+  border-left: 6px solid var(--verdigris-bright);
   border-radius: 4px;
   padding: 1rem 1.25rem;
   box-shadow:
-    0 3px 10px rgba(34, 26, 18, 0.35),
-    inset 0 1px 0 rgba(255, 244, 214, 0.6);
+    0 3px 10px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(201, 162, 39, 0.12);
 }
 
 .campaign-card:hover {
   box-shadow:
-    0 5px 14px rgba(34, 26, 18, 0.42),
-    inset 0 1px 0 rgba(255, 244, 214, 0.6);
+    0 5px 14px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(230, 201, 106, 0.18);
 }
 
 .campaign-card.inactive {
   border-left-color: var(--neutral);
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .campaign-card .title-row {
@@ -127,23 +140,33 @@ main {
   font-size: 1.25rem;
 }
 
+.campaign-card .title-row h2 a {
+  color: var(--gold-bright);
+  text-decoration: none;
+}
+
+.campaign-card .title-row h2 a:hover {
+  color: var(--gold-pale);
+}
+
 .campaign-card .status-badge {
-  font-size: 0.75rem;
-  font-weight: bold;
-  letter-spacing: 0.08em;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.25rem 0.6rem;
   border-radius: 3px;
-  border: 1px solid var(--gold);
-  color: var(--gold-deep);
-  background: rgba(255, 244, 214, 0.4);
+  border: 1px solid var(--gold-deep);
+  color: var(--gold-bright);
+  background: rgba(201, 162, 39, 0.08);
   white-space: nowrap;
 }
 
 .campaign-card .status-badge.active {
-  border-color: #3f7a4a;
-  color: #2f5f39;
-  background: rgba(63, 122, 74, 0.12);
+  border-color: var(--verdigris-bright);
+  color: var(--patina);
+  background: rgba(47, 107, 83, 0.18);
 }
 
 .campaign-card .details-row {
@@ -176,45 +199,44 @@ main {
 
 .experience-total {
   font-size: 1.35rem;
-  color: var(--teal-deep);
+  color: var(--gold-bright);
   font-weight: bold;
 }
 
 .actions {
   margin-top: 1.25rem;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 0.75rem;
 }
 
 .arkham-button {
   display: inline-block;
-  background: linear-gradient(180deg, #2e7d78, #1a5c58 60%, #0f3d3e);
-  color: #f0ead8;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: bold;
+  background: linear-gradient(180deg, var(--verdigris-bright), var(--verdigris) 60%, var(--verdigris-deep));
+  color: var(--gold-pale);
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 600;
   padding: 0.55rem 1.2rem;
-  border: 1px solid #0c2f30;
+  border: 1px solid var(--gold-deep);
   border-radius: 3px;
   cursor: pointer;
   text-decoration: none;
-  letter-spacing: 0.04em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 2px 5px rgba(21, 16, 11, 0.45), inset 0 1px 0 rgba(214, 229, 224, 0.35);
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(230, 201, 106, 0.2);
 }
 
 .arkham-button:hover {
-  filter: brightness(1.12);
-  box-shadow: 0 3px 8px rgba(34, 26, 18, 0.55), inset 0 1px 0 rgba(255, 244, 214, 0.55);
+  filter: brightness(1.15);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(240, 223, 174, 0.3);
 }
 
 .arkham-button.subtle {
-  background: linear-gradient(180deg, #6b5232, #4f3c22);
-  color: #f0ead8;
-  font-size: 0.85rem;
+  background: linear-gradient(180deg, #3a3222, #292214);
+  color: var(--gold-pale);
+  font-size: 0.82rem;
   padding: 0.35rem 0.8rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--gold-deep);
 }
 
 .new-campaign-bar {
@@ -223,37 +245,24 @@ main {
   margin-bottom: 1.5rem;
 }
 
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.import-label {
-  display: inline-block;
-  cursor: pointer;
-}
-
 .form-card {
-  background: linear-gradient(160deg, #f7ecd4, var(--parchment-dark));
-  border: 1px solid var(--gold);
+  background: linear-gradient(165deg, var(--abyss-panel), var(--abyss-soft));
+  border: 1px solid var(--gold-deep);
   border-top: 4px solid var(--gold);
   border-radius: 4px;
   padding: 1.5rem;
   box-shadow:
-    0 4px 12px rgba(34, 26, 18, 0.35),
-    inset 0 1px 0 rgba(255, 244, 214, 0.6);
+    0 4px 12px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(201, 162, 39, 0.12);
   max-width: 560px;
   margin: 0 auto;
 }
 
 .form-card h2 {
   margin-top: 0;
-  border-bottom: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold-deep);
   padding-bottom: 0.5rem;
+  color: var(--gold-bright);
 }
 
 .form-field {
@@ -262,19 +271,24 @@ main {
 
 .form-field label {
   display: block;
-  font-weight: bold;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   margin-bottom: 0.3rem;
+  color: var(--bone);
 }
 
 .form-field select,
 .form-field input {
   width: 100%;
   padding: 0.5rem;
-  font-family: inherit;
-  font-size: 1rem;
-  border: 1px solid var(--gold);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.05rem;
+  border: 1px solid var(--gold-deep);
   border-radius: 3px;
-  background: #fdf6e3;
+  background: #101c15;
   color: var(--ink);
 }
 
@@ -282,18 +296,18 @@ main {
 .form-field input:focus,
 .form-field textarea:focus {
   outline: none;
-  border-color: var(--teal-bright);
-  box-shadow: 0 0 0 2px rgba(46, 125, 120, 0.35);
+  border-color: var(--verdigris-bright);
+  box-shadow: 0 0 0 2px rgba(47, 107, 83, 0.45);
 }
 
 .form-field textarea {
   width: 100%;
   padding: 0.5rem;
-  font-family: inherit;
-  font-size: 1rem;
-  border: 1px solid var(--gold);
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.05rem;
+  border: 1px solid var(--gold-deep);
   border-radius: 3px;
-  background: #fdf6e3;
+  background: #101c15;
   color: var(--ink);
   min-height: 80px;
   resize: vertical;
@@ -306,9 +320,9 @@ main {
 }
 
 .error-message {
-  background: rgba(140, 31, 20, 0.12);
+  background: rgba(140, 31, 20, 0.18);
   border: 1px solid var(--blood);
-  color: var(--blood);
+  color: #e0a19a;
   padding: 0.75rem 1rem;
   border-radius: 3px;
   margin-bottom: 1rem;
@@ -317,9 +331,10 @@ main {
 .campaign-context {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
-  background: linear-gradient(180deg, rgba(34, 26, 18, 0.10), rgba(34, 26, 18, 0.04));
-  border: 1px solid var(--gold);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.12));
+  border: 1px solid var(--gold-deep);
   border-left: 4px solid var(--gold);
   border-radius: 3px;
   padding: 0.75rem 1rem;
@@ -337,12 +352,12 @@ main {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.5rem 0;
-  border-bottom: 1px dashed var(--gold);
+  border-bottom: 1px dashed rgba(201, 162, 39, 0.35);
 }
 
 .experience-log .entry-kind {
   font-weight: bold;
-  color: var(--teal-deep);
+  color: var(--gold-bright);
 }
 
 .experience-log .entry-notes {
@@ -351,10 +366,23 @@ main {
 }
 
 .back-link {
-  display: inline-block;
-  margin-bottom: 1rem;
-  color: var(--teal-deep);
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  padding: 0.4rem 0.9rem;
+  background: linear-gradient(180deg, var(--verdigris-bright), var(--verdigris) 60%, var(--verdigris-deep));
+  color: var(--gold-pale);
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--gold-deep);
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(230, 201, 106, 0.2);
+}
+
+.back-link:hover {
+  filter: brightness(1.15);
 }
 
 .empty-state {
@@ -362,56 +390,6 @@ main {
   font-style: italic;
   color: var(--ink-soft);
   padding: 3rem 0;
-}
-
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.toolbar .arkham-button {
-  font-size: 1.15rem;
-  padding: 0.7rem 1.5rem;
-}
-
-.toolbar .utility-group {
-  display: inline-flex;
-  gap: 0.4rem;
-  margin-left: auto;
-}
-
-.toolbar .utility-group .arkham-button {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.55rem;
-  letter-spacing: 0.02em;
-}
-
-.campaign-card .title-row h2 {
-  font-size: 1.45rem;
-}
-
-.campaign-card .details-row {
-  font-size: 1.15rem;
-}
-
-.faction-symbol {
-  width: 28px;
-  height: 28px;
-  font-size: 1.3rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.campaign-card .actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
 }
 
 .hidden {
@@ -426,9 +404,9 @@ main {
 }
 
 .faction-filter-button {
-  background: linear-gradient(180deg, #6b5232, #4f3c22);
-  color: #f0ead8;
-  font-family: inherit;
+  background: linear-gradient(180deg, #3a3222, #292214);
+  color: var(--gold-pale);
+  font-family: "Cinzel", Georgia, serif;
   font-size: 0.75rem;
   padding: 0.25rem 0.55rem;
   border: 1px solid var(--gold-deep);
@@ -438,8 +416,7 @@ main {
 }
 
 .faction-filter-button.selected {
-  background: linear-gradient(180deg, #2e7d78, #1a5c58 60%, #0f3d3e);
-  border-color: #0c2f30;
+  background: linear-gradient(180deg, var(--verdigris-bright), var(--verdigris) 60%, var(--verdigris-deep));
   font-weight: bold;
 }
 
@@ -467,13 +444,13 @@ main {
 .custom-campaign-toggle input[type="checkbox"] {
   width: 0.85rem;
   height: 0.85rem;
-  accent-color: var(--teal);
+  accent-color: var(--verdigris-bright);
   cursor: pointer;
 }
 
 .custom-campaign-label {
   cursor: pointer;
-  color: var(--teal-deep);
+  color: var(--patina);
 }
 
 .class-icon {
@@ -487,17 +464,16 @@ main {
   height: 28px;
 }
 
-
 .investigator-name {
   font-weight: bold;
 }
 
-.investigator-name.guardian { color: #2c5d8c; }
-.investigator-name.seeker { color: #c4792b; }
-.investigator-name.rogue { color: #4d7d4a; }
-.investigator-name.mystic { color: #6f5ba1; }
-.investigator-name.survivor { color: #a63d22; }
-.investigator-name.neutral { color: #6e675c; }
+.investigator-name.guardian { color: var(--guardian); }
+.investigator-name.seeker { color: var(--seeker); }
+.investigator-name.rogue { color: var(--rogue); }
+.investigator-name.mystic { color: var(--mystic); }
+.investigator-name.survivor { color: var(--survivor); }
+.investigator-name.neutral { color: var(--neutral); }
 
 .faction-filter-button .class-icon {
   width: 16px;
@@ -526,9 +502,9 @@ img.class-icon {
 .investigator-pick-list {
   max-height: 12rem;
   overflow-y: auto;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--gold-deep);
   border-radius: 3px;
-  background: #fdf6e3;
+  background: #101c15;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -542,7 +518,7 @@ img.class-icon {
   gap: 0.5rem;
   background: none;
   border: none;
-  font-family: inherit;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 1rem;
   text-align: left;
   padding: 0.3rem 0.5rem;
@@ -551,12 +527,12 @@ img.class-icon {
 }
 
 .investigator-pick:hover {
-  background: rgba(26, 92, 88, 0.12);
+  background: rgba(47, 107, 83, 0.25);
 }
 
 .investigator-pick.selected {
-  background: rgba(26, 92, 88, 0.22);
-  outline: 2px solid var(--teal);
+  background: rgba(47, 107, 83, 0.4);
+  outline: 2px solid var(--verdigris-bright);
 }
 
 .investigator-pick .class-icon {
@@ -571,7 +547,7 @@ img.class-icon {
 }
 
 .experience-entry:hover {
-  background: rgba(26, 92, 88, 0.10);
+  background: rgba(47, 107, 83, 0.14);
 }
 
 .experience-log-total {
@@ -581,7 +557,7 @@ img.class-icon {
 .edit-entry-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(21, 16, 11, 0.6);
+  background: rgba(11, 20, 16, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -605,19 +581,19 @@ img.class-icon {
 }
 
 .experience-entry summary:hover {
-  background: rgba(26, 92, 88, 0.10);
+  background: rgba(47, 107, 83, 0.14);
 }
 
 .experience-entry details[open] summary {
-  background: rgba(26, 92, 88, 0.16);
+  background: rgba(47, 107, 83, 0.22);
 }
 
 .edit-entry-form {
   margin-top: 0.75rem;
   padding: 0.75rem;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--gold-deep);
   border-radius: 3px;
-  background: rgba(253, 246, 227, 0.65);
+  background: rgba(16, 28, 21, 0.85);
 }
 
 .chapter-select {
@@ -628,7 +604,11 @@ img.class-icon {
 }
 
 .chapter-label {
-  font-weight: bold;
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .chapter-checkbox {
@@ -642,20 +622,21 @@ img.class-icon {
 .chapter-checkbox input[type="checkbox"] {
   width: 0.95rem;
   height: 0.95rem;
-  accent-color: var(--teal);
+  accent-color: var(--verdigris-bright);
   cursor: pointer;
 }
 
 .chapter-badge {
   display: inline-block;
-  font-size: 0.72rem;
-  font-weight: bold;
-  letter-spacing: 0.05em;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   padding: 0.12rem 0.45rem;
   border: 1px solid var(--gold-deep);
   border-radius: 3px;
-  background: rgba(138, 106, 42, 0.14);
-  color: var(--gold-deep);
+  background: rgba(201, 162, 39, 0.1);
+  color: var(--gold-bright);
   vertical-align: middle;
   white-space: nowrap;
 }
@@ -680,25 +661,6 @@ img.class-icon {
   margin: 0.75rem 0;
 }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 1.25rem;
-  padding: 0.4rem 0.9rem;
-  background: linear-gradient(180deg, #2e7d78, #1a5c58 60%, #0f3d3e);
-  color: #f0ead8;
-  font-weight: bold;
-  text-decoration: none;
-  border: 1px solid #0c2f30;
-  border-radius: 3px;
-  box-shadow: 0 2px 5px rgba(21, 16, 11, 0.45), inset 0 1px 0 rgba(214, 229, 224, 0.35);
-}
-
-.back-link:hover {
-  filter: brightness(1.12);
-}
-
 .experience-breakdown {
   display: block;
   font-size: 0.82rem;
@@ -713,12 +675,120 @@ img.class-icon {
   gap: 0.35rem;
 }
 
-
 .campaign-view-info h2 {
   margin: 0 0 0.5rem;
+  color: var(--gold-bright);
 }
 
-.detail-friends,
+.detail-friends {
+  margin: 0.75rem 0;
+}
+
+.detail-friends-heading {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--patina);
+}
+
+.detail-friend-entry {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 3px;
+  background: rgba(16, 28, 21, 0.6);
+  margin-bottom: 0.35rem;
+}
+
+.detail-friend-entry .friend-name {
+  font-weight: bold;
+  color: var(--bone);
+}
+
+.detail-friend-entry .friend-investigator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.detail-friend-entry .friend-no-investigator {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.detail-friend-entry .friend-total-xp {
+  margin-left: auto;
+  font-weight: bold;
+  color: var(--gold-bright);
+}
+
+.friend-editor {
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 3px;
+  padding: 0.6rem;
+  background: rgba(16, 28, 21, 0.5);
+}
+
+.friend-add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.friend-add-row input {
+  flex: 1 1 8rem;
+  width: auto;
+}
+
+.friend-add-row select {
+  flex: 1 1 12rem;
+  width: auto;
+}
+
+.friend-list {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.friend-edit-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.friend-edit-row input {
+  flex: 1 1 8rem;
+  width: auto;
+}
+
+.friend-edit-row select {
+  flex: 1 1 12rem;
+  width: auto;
+}
+
+.friend-investigator-hint {
+  font-weight: normal;
+  text-transform: none;
+  color: var(--patina);
+}
+
+.friend-amount-field {
+  margin-bottom: 0.6rem;
+}
+
+.entry-friend-amounts {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
 .detail-notes {
   color: var(--ink-soft);
   font-style: italic;
@@ -726,7 +796,26 @@ img.class-icon {
 }
 
 .detail-total-xp {
-  font-size: 1.3rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0.9rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--gold-bright);
+  border: 1px solid var(--gold-deep);
+  border-radius: 3px;
+  background: rgba(201, 162, 39, 0.08);
+  padding: 0.5rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.detail-total-xp .experience-breakdown {
+  font-size: 0.95rem;
+  font-weight: normal;
+  color: var(--ink-soft);
+  margin: 0;
 }
 
 .detail-actions {
@@ -734,7 +823,7 @@ img.class-icon {
 }
 
 .arkham-button.danger {
-  background: linear-gradient(180deg, #8c1f14, #5f140d);
+  background: linear-gradient(180deg, var(--blood), var(--blood-dark));
   border-color: #3f0d08;
 }
 
@@ -756,14 +845,6 @@ img.class-icon {
   margin: 0.1rem 0 0.25rem;
 }
 
-.detail-total-xp {
-  margin-top: 0.9rem;
-}
-
-.campaign-view-info .experience-breakdown {
-  margin: 0.3rem 0 0.25rem;
-}
-
 .campaign-card.finished .title-row {
   margin-bottom: 0.15rem;
 }
@@ -776,29 +857,6 @@ img.class-icon {
   padding: 0.65rem 1.25rem;
 }
 
-.detail-total-xp {
-  margin-top: 1.6rem;
-  margin-bottom: 0.9rem;
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: var(--teal-deep);
-  border: 1px solid var(--gold);
-  border-radius: 3px;
-  background: rgba(255, 244, 214, 0.4);
-  padding: 0.5rem 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.detail-total-xp .experience-breakdown {
-  font-size: 0.95rem;
-  font-weight: normal;
-  color: var(--ink-soft);
-  margin: 0;
-}
-
 .title-row.finished-title-row {
   flex-wrap: wrap;
   row-gap: 0.35rem;
@@ -806,6 +864,7 @@ img.class-icon {
 
 .finished-buttons {
   display: inline-flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-left: auto;
 }
@@ -813,4 +872,35 @@ img.class-icon {
 .finished-buttons .arkham-button {
   font-size: 0.8rem;
   padding: 0.3rem 0.7rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.import-label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.toolbar .arkham-button {
+  font-size: 1.15rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.toolbar .utility-group {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.toolbar .utility-group .arkham-button {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  letter-spacing: 0.02em;
 }

@@ -2,6 +2,7 @@ import { CampaignTitle } from "../value-objects/campaign-title";
 import { ExperienceEntry } from "./experience-entry";
 import { ExperiencePoints } from "../value-objects/experience-points";
 import { ExperienceType } from "../value-objects/experience-type";
+import { Friend } from "../value-objects/friend";
 
 export class Campaign {
   private experienceLog: ExperienceEntry[];
@@ -13,7 +14,7 @@ export class Campaign {
     public notes: string | null,
     public readonly campaignName: string,
     public readonly chapter: number,
-    public friends: string[],
+    public friends: Friend[],
     public readonly investigatorId: string,
     public readonly investigatorName: string,
     public readonly investigatorFaction: string,
@@ -29,7 +30,7 @@ export class Campaign {
     title: CampaignTitle,
     campaignName: string,
     chapter: number,
-    friends: string[],
+    friends: Friend[],
     investigatorId: string,
     investigatorName: string,
     investigatorFaction: string,
@@ -57,7 +58,7 @@ export class Campaign {
     title: CampaignTitle,
     campaignName: string,
     chapter: number,
-    friends: string[],
+    friends: Friend[],
     investigatorId: string,
     investigatorName: string,
     investigatorFaction: string,
@@ -85,14 +86,17 @@ export class Campaign {
     experienceType: ExperienceType,
     experiencePoints: ExperiencePoints,
     experienceTitle: string,
-    notes: string | null
+    notes: string | null,
+    friendAmounts: Record<string, number> = {}
   ): ExperienceEntry {
+    this.assertKnownFriends(friendAmounts);
     const entry = new ExperienceEntry(
       this.generateEntryId(),
       experienceType,
       experiencePoints,
       experienceTitle,
-      notes
+      notes,
+      friendAmounts
     );
     this.experienceLog.push(entry);
     return entry;
@@ -103,7 +107,8 @@ export class Campaign {
     experienceType: ExperienceType,
     experiencePoints: ExperiencePoints,
     experienceTitle: string,
-    notes: string | null
+    notes: string | null,
+    friendAmounts: Record<string, number> = {}
   ): void {
     const entry = this.experienceLog.find(
       (candidateEntry) => candidateEntry.id === entryId
@@ -111,15 +116,24 @@ export class Campaign {
     if (entry === undefined) {
       throw new Error(`No experience entry found with id ${entryId}.`);
     }
+    this.assertKnownFriends(friendAmounts);
     entry.experienceType = experienceType;
     entry.experiencePoints = experiencePoints;
     entry.experienceTitle = experienceTitle;
     entry.notes = notes;
+    entry.friendAmounts = friendAmounts;
   }
 
   public getTotalExperience(): number {
     return this.experienceLog.reduce(
       (sum, entry) => sum + entry.experiencePoints.getAmount(),
+      0
+    );
+  }
+
+  public getFriendTotalExperience(friendName: string): number {
+    return this.experienceLog.reduce(
+      (sum, entry) => sum + (entry.friendAmounts[friendName] ?? 0),
       0
     );
   }
@@ -150,7 +164,14 @@ export class Campaign {
     return this.title;
   }
 
-  public updateFriendsAndNotes(friends: string[], notes: string | null): void {
+  public updateFriendsAndNotes(friends: Friend[], notes: string | null): void {
+    const seenNames = new Set<string>();
+    for (const friend of friends) {
+      if (seenNames.has(friend.name)) {
+        throw new Error(`Friend name "${friend.name}" is duplicated.`);
+      }
+      seenNames.add(friend.name);
+    }
     this.friends = friends;
     this.notes = notes;
   }
@@ -161,6 +182,15 @@ export class Campaign {
 
   public reactivate(): void {
     this.isActive = true;
+  }
+
+  private assertKnownFriends(friendAmounts: Record<string, number>): void {
+    const knownNames = new Set(this.friends.map((friend) => friend.name));
+    for (const friendName of Object.keys(friendAmounts)) {
+      if (!knownNames.has(friendName)) {
+        throw new Error(`Unknown friend: ${friendName}`);
+      }
+    }
   }
 
   private generateEntryId(): string {
