@@ -58,7 +58,127 @@ async function loadArkhamCatalog() {
 
 function loadCampaigns() {
   const storedJson = localStorage.getItem(STORAGE_KEY);
-  return storedJson === null ? [] : JSON.parse(storedJson);
+  const storedCampaigns = storedJson === null ? [] : JSON.parse(storedJson);
+  return storedCampaigns.map(normalizeCampaign);
+}
+
+function investigatorOptionsHtml(selectedId) {
+  return arkhamCatalog.investigators
+    .map((investigator) => `<option value="${escapeHtml(investigator.investigatorId)}" ${investigator.investigatorId === selectedId ? "selected" : ""}>${escapeHtml(investigator.investigatorName)} (${escapeHtml(investigator.factionName)})</option>`)
+    .join("");
+}
+
+function renderFriendEditorRows(listElement, friends, onRemove) {
+  listElement.innerHTML = friends.length === 0
+    ? '<p class="form-hint">No friends added yet.</p>'
+    : friends
+        .map(
+          (friend, index) => `
+          <div class="friend-edit-row" data-friend-index="${index}">
+            <input type="text" class="friend-name-input" maxlength="120" value="${escapeHtml(friend.name)}" placeholder="Friend's name">
+            <select class="friend-investigator-select">
+              <option value="" ${friend.investigatorId === null ? "selected" : ""}>No investigator</option>
+              ${investigatorOptionsHtml(friend.investigatorId)}
+            </select>
+            <button type="button" class="arkham-button subtle friend-remove-button">Remove</button>
+          </div>`
+        )
+        .join("");
+  for (const rowElement of listElement.querySelectorAll(".friend-edit-row")) {
+    const index = Number(rowElement.dataset.friendIndex);
+    rowElement.querySelector(".friend-remove-button").addEventListener("click", () => {
+      friends.splice(index, 1);
+      renderFriendEditorRows(listElement, friends, onRemove);
+    });
+  }
+}
+
+function initFriendEditor(listElement, friends) {
+  renderFriendEditorRows(listElement, friends);
+  const addFriendButton = document.getElementById("add-friend-button");
+  addFriendButton.addEventListener("click", () => {
+    const nameInput = document.getElementById("friend-add-name");
+    const investigatorSelect = document.getElementById("friend-add-investigator");
+    const name = nameInput.value.trim();
+    if (name.length === 0) {
+      alert("Write your friend's name first.");
+      return;
+    }
+    if (friends.some((friend) => friend.name === name)) {
+      alert("A friend with that name has already been added.");
+      return;
+    }
+    const investigatorId = investigatorSelect.value;
+    const investigator = arkhamCatalog.investigators.find(
+      (candidate) => candidate.investigatorId === investigatorId
+    );
+    friends.push({
+      name,
+      investigatorId: investigator === undefined ? null : investigator.investigatorId,
+      investigatorName: investigator === undefined ? null : investigator.investigatorName,
+      investigatorFaction: investigator === undefined ? null : investigator.factionName,
+    });
+    nameInput.value = "";
+    investigatorSelect.value = "";
+    nameInput.focus();
+    renderFriendEditorRows(listElement, friends);
+  });
+}
+
+function readFriendEditor(listElement) {
+  const friends = [];
+  for (const rowElement of listElement.querySelectorAll(".friend-edit-row")) {
+    const name = rowElement.querySelector(".friend-name-input").value.trim();
+    if (name.length === 0) {
+      continue;
+    }
+    const investigatorId = rowElement.querySelector(".friend-investigator-select").value;
+    const investigator = arkhamCatalog.investigators.find(
+      (candidate) => candidate.investigatorId === investigatorId
+    );
+    friends.push({
+      name,
+      investigatorId: investigator === undefined ? null : investigator.investigatorId,
+      investigatorName: investigator === undefined ? null : investigator.investigatorName,
+      investigatorFaction: investigator === undefined ? null : investigator.factionName,
+    });
+  }
+  return friends;
+}
+
+function renderFriendLine(campaign, friend) {
+  const totalXp = getFriendTotalExperience(campaign, friend.name);
+  const investigator = friend.investigatorName === null
+    ? '<span class="friend-no-investigator">no investigator</span>'
+    : `<span class="investigator-name ${escapeHtml(friend.investigatorFaction)}">${escapeHtml(friend.investigatorName)}</span> ${renderClassIcon(friend.investigatorFaction)}`;
+  return `<div class="detail-friend-entry">
+    <span class="friend-name">${escapeHtml(friend.name)}</span>
+    <span class="friend-investigator">${investigator}</span>
+    <span class="friend-total-xp">${totalXp} XP</span>
+  </div>`;
+}
+
+function friendAmountInputs(campaign, prefix, entry) {
+  if (campaign.friends.length === 0) {
+    return "";
+  }
+  return campaign.friends
+    .map(
+      (friend, index) => `
+      <div class="form-field friend-amount-field">
+        <label for="${prefix}-friend-amount-${index}">${escapeHtml(friend.name)}${friend.investigatorName ? ` <span class="friend-investigator-hint">(${escapeHtml(friend.investigatorName)})</span>` : ""} &mdash; experience (optional)</label>
+        <input type="number" id="${prefix}-friend-amount-${index}" class="friend-amount-input" data-friend-name="${escapeHtml(friend.name)}" min="0" step="1" value="${entry === null ? "" : entry.friendAmounts?.[friend.name] ?? ""}">
+      </div>`
+    )
+    .join("");
+}
+
+function collectFriendAmounts(prefix) {
+  const friendAmounts = {};
+  for (const amountInput of document.querySelectorAll(`#${prefix} .friend-amount-input`)) {
+    friendAmounts[amountInput.dataset.friendName] = amountInput.value;
+  }
+  return friendAmounts;
 }
 
 function persistCampaigns() {
@@ -209,6 +329,7 @@ function showCampaignDetail(editMode = false) {
       (entry) => `
       <li class="experience-entry" data-entry-id="${escapeHtml(entry.id)}">
         <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)} &mdash; ${escapeHtml(entry.experienceTitle)}: +${entry.experienceAmount} XP</span>
+        ${Object.keys(entry.friendAmounts ?? {}).length > 0 ? `<span class="entry-friend-amounts">${campaign.friends.map((friend) => `${escapeHtml(friend.name)}: +${entry.friendAmounts[friend.name] ?? 0}`).join(" &middot; ")}</span>` : ""}
         ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
       </li>`
     )
@@ -221,8 +342,18 @@ function showCampaignDetail(editMode = false) {
           <input type="text" id="campaign-detail-title" maxlength="120" required value="${escapeHtml(campaign.title)}">
         </div>
         <div class="form-field">
-          <label for="campaign-detail-friends">Friends</label>
-          <input type="text" id="campaign-detail-friends" value="${escapeHtml(campaign.friends.join(", "))}">
+          <label>Friends who plays who, one at a time:</label>
+          <div class="friend-editor">
+            <div class="friend-add-row">
+              <input type="text" id="friend-add-name" maxlength="120" placeholder="Friend's name">
+              <select id="friend-add-investigator">
+                <option value="" selected>No investigator</option>
+                ${investigatorOptionsHtml(null)}
+              </select>
+              <button type="button" class="arkham-button subtle" id="add-friend-button">Add friend</button>
+            </div>
+            <div class="friend-list" id="friend-edit-list"></div>
+          </div>
         </div>
         <div class="form-field">
           <label for="campaign-detail-notes">Notes</label>
@@ -243,7 +374,7 @@ function showCampaignDetail(editMode = false) {
             <span class="chapter-badge">Ch. ${campaign.chapter ?? 1}</span>
           </span>
         </div>
-        ${campaign.friends.length > 0 ? `<p class="detail-friends">Friends: ${escapeHtml(campaign.friends.join(", "))}</p>` : ""}
+        ${campaign.friends.length > 0 ? `<div class="detail-friends"><h3 class="detail-friends-heading">Friends</h3>${campaign.friends.map((friend) => renderFriendLine(campaign, friend)).join("")}</div>` : ""}
         ${campaign.notes ? `<p class="detail-notes">${escapeHtml(campaign.notes)}</p>` : ""}
         <p class="detail-total-xp">Total XP: ${getTotalExperience(campaign)} ${renderExperienceBreakdown(campaign)}</p>
       </div>
@@ -266,6 +397,7 @@ function showCampaignDetail(editMode = false) {
   });
 
   if (editMode) {
+    initFriendEditor(document.getElementById("friend-edit-list"), campaign.friends);
     document.getElementById("edit-campaign-form").addEventListener("submit", (event) => {
       event.preventDefault();
       handleEditCampaign(campaign);
@@ -298,15 +430,12 @@ function showCampaignDetail(editMode = false) {
 
 function handleEditCampaign(campaign) {
   const title = document.getElementById("campaign-detail-title").value;
-  const friendsInput = document.getElementById("campaign-detail-friends").value;
+  const friends = readFriendEditor(document.getElementById("friend-edit-list"));
   const notes = document.getElementById("campaign-detail-notes").value;
 
   try {
     campaign.title = parseCampaignTitle(title);
-    campaign.friends = friendsInput
-      .split(",")
-      .map((friend) => friend.trim())
-      .filter((friend) => friend.length > 0);
+    campaign.friends = friends;
     const trimmedNotes = notes.trim();
     campaign.notes = trimmedNotes.length > 0 ? trimmedNotes : null;
     persistCampaigns();
@@ -347,9 +476,18 @@ function showCreateCampaign() {
         <input type="text" id="customCampaignName" maxlength="120" placeholder="Write your own campaign name">
       </div>
       <div class="form-field">
-        <label for="friends">Friends you play with</label>
-        <input type="text" id="friends" placeholder="e.g. Sven, Lisa, Jon">
-        <p class="form-hint">Separate multiple names with commas. Optional.</p>
+        <label>Friends you play with, one at a time:</label>
+        <div class="friend-editor">
+          <div class="friend-add-row">
+            <input type="text" id="friend-add-name" maxlength="120" placeholder="Friend's name">
+            <select id="friend-add-investigator">
+              <option value="" selected>No investigator</option>
+            </select>
+            <button type="button" class="arkham-button subtle" id="add-friend-button">Add friend</button>
+          </div>
+          <div class="friend-list" id="friend-edit-list"></div>
+        </div>
+        <p class="form-hint">Optional. Pick which investigator each friend plays, or leave it unset.</p>
       </div>
       <div class="form-field">
         <label for="notes">Notes</label>
@@ -384,6 +522,7 @@ function showCreateCampaign() {
     event.preventDefault();
     handleCreateCampaign();
   });
+  initFriendEditor(document.getElementById("friend-edit-list"), []);
   document.getElementById("custom-campaign-checkbox").addEventListener("change", (event) => {
     const isCustom = event.target.checked;
     document.getElementById("campaignName").classList.toggle("hidden", isCustom);
@@ -462,15 +601,11 @@ function handleCreateCampaign() {
     : document.getElementById("campaignName").value;
   const titleInput = document.getElementById("campaignTitle").value.trim();
   const title = titleInput.length > 0 ? titleInput : campaignName;
-  const friendsInput = document.getElementById("friends").value;
+  const friends = readFriendEditor(document.getElementById("friend-edit-list"));
   const notes = document.getElementById("notes").value;
   const investigatorId = document.getElementById("investigatorId").value;
 
   try {
-    const friends = friendsInput
-      .split(",")
-      .map((friend) => friend.trim())
-      .filter((friend) => friend.length > 0);
     const investigator = arkhamCatalog.investigators.find(
       (candidate) => candidate.investigatorId === investigatorId
     );
@@ -508,6 +643,7 @@ function showGainExperience() {
       (entry) => `
       <li class="experience-entry" data-entry-id="${escapeHtml(entry.id)}">
         <span class="entry-kind">${EXPERIENCE_DISPLAY_NAMES(entry.experienceKind)} &mdash; ${escapeHtml(entry.experienceTitle)}: +${entry.experienceAmount} XP</span>
+        ${Object.keys(entry.friendAmounts ?? {}).length > 0 ? `<span class="entry-friend-amounts">${campaign.friends.map((friend) => `${escapeHtml(friend.name)}: +${entry.friendAmounts[friend.name] ?? 0}`).join(" &middot; ")}</span>` : ""}
         ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
       </li>`
     )
@@ -543,9 +679,10 @@ function showGainExperience() {
         <input type="text" id="experienceTitle" maxlength="120" required placeholder='e.g. "Scenario 1", "Interlude scenario 1/2", "Prelude day 1", "In the thick of it"'>
       </div>
       <div class="form-field">
-        <label for="experienceAmount">Experience</label>
+        <label for="experienceAmount">Your experience (${escapeHtml(campaign.investigatorName)})</label>
         <input type="number" id="experienceAmount" min="0" step="1" required>
       </div>
+      ${friendAmountInputs(campaign, "gain-experience-form", null)}
       <div class="form-field">
         <label for="notes">Notes</label>
         <textarea id="notes" placeholder="Optional notes"></textarea>
@@ -604,9 +741,10 @@ function showEditExperience(campaign, entry) {
           <input type="text" id="edit-experienceTitle" maxlength="120" required value="${escapeHtml(entry.experienceTitle)}">
         </div>
         <div class="form-field">
-          <label for="edit-experienceAmount">Experience</label>
+          <label for="edit-experienceAmount">Your experience (${escapeHtml(campaign.investigatorName)})</label>
           <input type="number" id="edit-experienceAmount" min="0" step="1" required value="${entry.experienceAmount}">
         </div>
+        ${friendAmountInputs(campaign, "edit-experience-form", entry)}
         <div class="form-field">
           <label for="edit-notes">Notes</label>
           <textarea id="edit-notes">${entry.notes ? escapeHtml(entry.notes) : ""}</textarea>
@@ -640,10 +778,11 @@ function handleGainExperience(campaign) {
   const experienceKind = document.getElementById("experienceKind").value;
   const experienceTitle = document.getElementById("experienceTitle").value;
   const experienceAmount = document.getElementById("experienceAmount").value;
+  const friendAmounts = collectFriendAmounts("gain-experience-form");
   const notes = document.getElementById("notes").value;
 
   try {
-    gainExperience(campaign, experienceKind, experienceTitle, experienceAmount, notes);
+    gainExperience(campaign, experienceKind, experienceTitle, experienceAmount, notes, friendAmounts);
     persistCampaigns();
     if (gainPageReturnTarget === "detail") {
       showCampaignDetail();
@@ -659,10 +798,11 @@ function handleUpdateExperience(campaign, entry) {
   const experienceKind = document.getElementById("edit-experienceKind").value;
   const experienceTitle = document.getElementById("edit-experienceTitle").value;
   const experienceAmount = document.getElementById("edit-experienceAmount").value;
+  const friendAmounts = collectFriendAmounts("edit-experience-form");
   const notes = document.getElementById("edit-notes").value;
 
   try {
-    updateExperienceEntry(campaign, entry.id, experienceKind, experienceTitle, experienceAmount, notes);
+    updateExperienceEntry(campaign, entry.id, experienceKind, experienceTitle, experienceAmount, notes, friendAmounts);
     persistCampaigns();
     if (gainPageReturnTarget === "detail") {
       showCampaignDetail();

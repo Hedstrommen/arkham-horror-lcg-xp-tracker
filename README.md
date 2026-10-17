@@ -31,8 +31,8 @@ npm run dev
 ## Features
 
 - **Overview page** listing all campaigns: title, campaign name, investigator, class icon, total XP, and active/finished status. Active campaigns are always sorted to the top.
-- **Create new campaign** page: pick a campaign and your investigator from dropdowns (seeded from ArkhamDB data), and name the friends you play with.
-- **Gain XP** page per campaign: record Scenario / Interlude / Card experience with an amount and optional notes.
+- **Create new campaign** page: pick a campaign and your investigator from dropdowns (seeded from ArkhamDB data). Add friends one at a time and optionally pick which investigator each friend plays, so it's clear who plays who — your own investigator stays the focus.
+- **Gain XP** page per campaign: record Scenario / Interlude / Card experience with an amount and optional notes. Your investigator's experience is required; each friend gets an optional amount in the same entry, and the campaign detail page shows a running total per friend.
 - **Mark finished / Reactivate** toggle per campaign (finished ones drop to the bottom and lose their Gain XP button).
 - **Export / Import** your data as a JSON file (client-side version) to move campaigns between devices or keep a backup.
 
