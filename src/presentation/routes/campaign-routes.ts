@@ -14,6 +14,51 @@ import { renderOverviewPage } from "../views/overview-view";
 import { renderCreateCampaignPage } from "../views/create-campaign-view";
 import { renderGainExperiencePage } from "../views/gain-experience-view";
 import { getSessionId } from "../auth/current-user";
+import { Friend } from "../../domain/value-objects/friend";
+import { parseFriend } from "../../domain/value-objects/friend";
+
+function parseFriendsInput(rawNames: unknown, rawInvestigators: unknown): Friend[] {
+  const names = Array.isArray(rawNames) ? rawNames.map(String) : [];
+  const investigatorIds = Array.isArray(rawInvestigators) ? rawInvestigators.map(String) : [];
+  const friendList: Friend[] = [];
+  names.forEach((name, index) => {
+    const investigatorId = investigatorIds[index] ?? "";
+    friendList.push(parseFriend({ name, investigatorId: investigatorId === "" ? null : investigatorId }));
+  });
+  const seenNames = new Set<string>();
+  const friends: Friend[] = [];
+  for (const friend of friendList) {
+    if (seenNames.has(friend.name)) {
+      continue;
+    }
+    seenNames.add(friend.name);
+    friends.push(friend);
+  }
+  return friends;
+}
+
+function parseFriendAmountsInput(
+  rawFriendNames: unknown,
+  rawFriendAmounts: unknown,
+  knownFriends: Friend[]
+): Record<string, number> {
+  const names = Array.isArray(rawFriendNames) ? rawFriendNames.map(String) : [];
+  const amounts = Array.isArray(rawFriendAmounts) ? rawFriendAmounts.map(String) : [];
+  const knownNames = new Set(knownFriends.map((friend) => friend.name));
+  const friendAmounts: Record<string, number> = {};
+  names.forEach((name, index) => {
+    const rawAmount = (amounts[index] ?? "").trim();
+    if (rawAmount.length === 0 || !knownNames.has(name)) {
+      return;
+    }
+    const amount = Number(rawAmount);
+    if (!Number.isInteger(amount) || amount < 0) {
+      throw new Error(`Experience for ${name} must be a non-negative whole number.`);
+    }
+    friendAmounts[name] = amount;
+  });
+  return friendAmounts;
+}
 
 const VALID_STATUS_CHANGES: CampaignStatusChange[] = ["finish", "reactivate"];
 
@@ -73,18 +118,22 @@ export function createCampaignRoutes(
     if (ownerId === null) {
       return;
     }
-    const friendsInput = typeof request.body.friends === "string"
-      ? request.body.friends
-      : "";
     const notesInput = typeof request.body.notes === "string"
       ? request.body.notes.trim()
       : "";
-    const friends: string[] = friendsInput
-      .split(",")
-      .map((friend: string) => friend.trim())
-      .filter((friend: string) => friend.length > 0);
 
     try {
+      const friends = parseFriendsInput(request.body.friendNames, request.body.friendInvestigators);
+      for (const friend of friends) {
+        const investigator = friend.investigatorId === null
+          ? null
+          : arkhamCatalog.findInvestigatorById(friend.investigatorId);
+        if (friend.investigatorId !== null && investigator === null) {
+          throw new Error(`Unknown investigator: ${friend.investigatorId}`);
+        }
+        friend.investigatorName = investigator === null ? null : investigator.investigatorName;
+        friend.investigatorFaction = investigator === null ? null : investigator.factionName;
+      }
       const chapterNumber = Number(request.body.chapter);
       const titleInput = typeof request.body.title === "string"
         ? request.body.title.trim()
@@ -126,7 +175,7 @@ export function createCampaignRoutes(
       return;
     }
     const editMode = request.query.edit === "1";
-    response.send(renderCampaignDetailPage(campaign, editMode));
+    response.send(renderCampaignDetailPage(campaign, arkhamCatalog.listInvestigators(), editMode));
   });
 
   router.post(
@@ -136,13 +185,17 @@ export function createCampaignRoutes(
       if (ownerId === null) {
         return;
       }
-      const friendsInput = typeof request.body.friends === "string"
-        ? request.body.friends
-        : "";
-      const friends: string[] = friendsInput
-        .split(",")
-        .map((friend: string) => friend.trim())
-        .filter((friend: string) => friend.length > 0);
+      const friends = parseFriendsInput(request.body.friendNames, request.body.friendInvestigators);
+      for (const friend of friends) {
+        const investigator = friend.investigatorId === null
+          ? null
+          : arkhamCatalog.findInvestigatorById(friend.investigatorId);
+        if (friend.investigatorId !== null && investigator === null) {
+          throw new Error(`Unknown investigator: ${friend.investigatorId}`);
+        }
+        friend.investigatorName = investigator === null ? null : investigator.investigatorName;
+        friend.investigatorFaction = investigator === null ? null : investigator.factionName;
+      }
       const notesInput = typeof request.body.notes === "string"
         ? request.body.notes.trim()
         : "";
@@ -167,7 +220,7 @@ export function createCampaignRoutes(
           response.status(404).send("Campaign not found.");
           return;
         }
-        response.status(400).send(renderCampaignDetailPage(campaign));
+        response.status(400).send(renderCampaignDetailPage(campaign, arkhamCatalog.listInvestigators()));
       }
     }
   );
@@ -241,6 +294,11 @@ export function createCampaignRoutes(
           experienceAmount: Number(request.body.experienceAmount),
           experienceTitle: titleInput,
           notes: notesInput.length > 0 ? notesInput : null,
+          friendAmounts: parseFriendAmountsInput(
+            request.body.friendNames,
+            request.body.friendAmounts,
+            campaign.friends
+          ),
         });
         response.redirect(`/campaigns/${campaign.id}`);
       } catch (error) {
@@ -283,6 +341,11 @@ export function createCampaignRoutes(
           experienceAmount: Number(request.body.experienceAmount),
           experienceTitle: titleInput,
           notes: notesInput.length > 0 ? notesInput : null,
+          friendAmounts: parseFriendAmountsInput(
+            request.body.friendNames,
+            request.body.friendAmounts,
+            campaign.friends
+          ),
         });
         response.redirect(`/campaigns/${campaign.id}/gain-experience`);
       } catch (error) {

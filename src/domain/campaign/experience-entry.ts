@@ -6,17 +6,20 @@ export class ExperienceEntry {
   public experiencePoints: ExperiencePoints;
   public experienceTitle: string;
   public notes: string | null;
+  public friendAmounts: Record<string, number>;
 
   constructor(
     public readonly id: string,
     experienceType: ExperienceType,
     experiencePoints: ExperiencePoints,
     experienceTitle: string,
-    notes: string | null
+    notes: string | null,
+    friendAmounts: Record<string, number> = {}
   ) {
     this.experienceType = experienceType;
     this.experiencePoints = experiencePoints;
     this.experienceTitle = experienceTitle;
     this.notes = notes;
+    this.friendAmounts = friendAmounts;
   }
 }

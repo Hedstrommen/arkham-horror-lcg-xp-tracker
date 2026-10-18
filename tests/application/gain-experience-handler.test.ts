@@ -63,6 +63,7 @@ describe("GainExperienceHandler", () => {
       experienceAmount: 4,
       experienceTitle: "Scenario 1",
       notes: "Victory!",
+      friendAmounts: {},
     });
 
     expect(repository.findByIdAndOwnerId("campaign-1", OWNER_ID)?.getTotalExperience()).toBe(4);
@@ -81,6 +82,7 @@ describe("GainExperienceHandler", () => {
         experienceAmount: 4,
         experienceTitle: "Scenario 2",
         notes: null,
+        friendAmounts: {},
       })
     ).toThrow();
   });
@@ -97,6 +99,7 @@ describe("GainExperienceHandler", () => {
         experienceAmount: 4,
         experienceTitle: "Scenario 2",
         notes: null,
+        friendAmounts: {},
       })
     ).toThrow();
   });

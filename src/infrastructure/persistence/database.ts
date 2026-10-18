@@ -32,14 +32,28 @@ const CREATE_EXPERIENCE_ENTRIES_TABLE = `
     experience_kind TEXT NOT NULL,
     experience_amount INTEGER NOT NULL,
     experience_title TEXT NOT NULL,
-    notes TEXT
+    notes TEXT,
+    friend_amounts TEXT NOT NULL DEFAULT '{}'
   )
 `;
+
+function migrateExperienceEntries(database: Database.Database): void {
+  const tableInfo = database
+    .prepare("PRAGMA table_info(experience_entries)")
+    .all() as { name: string }[];
+  const columnNames = tableInfo.map((column) => column.name);
+  if (!columnNames.includes("friend_amounts")) {
+    database.exec(
+      "ALTER TABLE experience_entries ADD COLUMN friend_amounts TEXT NOT NULL DEFAULT '{}'"
+    );
+  }
+}
 
 export function openDatabase(databaseFilePath: string): Database.Database {
   const database = new Database(databaseFilePath);
   database.exec(CREATE_USERS_TABLE);
   database.exec(CREATE_CAMPAIGNS_TABLE);
   database.exec(CREATE_EXPERIENCE_ENTRIES_TABLE);
+  migrateExperienceEntries(database);
   return database;
 }

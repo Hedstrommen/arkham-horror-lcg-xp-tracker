@@ -3,6 +3,20 @@ import { InvestigatorFactionName } from "../../domain/value-objects/investigator
 import { escapeHtml, renderLayout } from "./layout";
 import { renderFactionIcon } from "./faction-icon";
 
+
+function friendAmountFields(campaign: Campaign): string {
+  return campaign.friends
+    .map(
+      (friend, index) => `
+      <div class="form-field friend-amount-field">
+        <label for="friend-amount-${index}">${escapeHtml(friend.name)}${friend.investigatorName ? ` <span class="friend-investigator-hint">(${escapeHtml(friend.investigatorName)})</span>` : ""} &mdash; experience (optional)</label>
+        <input type="number" id="friend-amount-${index}" name="friendAmounts" min="0" step="1">
+        <input type="hidden" name="friendNames" value="${escapeHtml(friend.name)}">
+      </div>`
+    )
+    .join("");
+}
+
 export function renderGainExperiencePage(
   campaign: Campaign,
   errorMessage: string | null
@@ -22,6 +36,7 @@ export function renderGainExperiencePage(
         <details>
           <summary>
             <span class="entry-kind">${escapeHtml(entry.experienceType.getDisplayName())} &mdash; ${escapeHtml(entry.experienceTitle)}: +${entry.experiencePoints.getAmount()} XP</span>
+            ${Object.keys(entry.friendAmounts).length > 0 ? `<span class="entry-friend-amounts">${escapeHtml(campaign.friends.map((friend) => `${friend.name}: +${entry.friendAmounts[friend.name] ?? 0}`).join(" &middot; "))}</span>` : ""}
             ${entry.notes ? `<span class="entry-notes">${escapeHtml(entry.notes)}</span>` : ""}
           </summary>
           <form class="edit-entry-form" method="post" action="/campaigns/${escapeHtml(campaign.id)}/experience/${escapeHtml(entry.id)}">
@@ -87,9 +102,10 @@ export function renderGainExperiencePage(
         <input type="text" id="experienceTitle" name="experienceTitle" maxlength="120" required placeholder="e.g. &quot;Scenario 1&quot;, &quot;Interlude scenario 1/2&quot;, &quot;Prelude day 1&quot;, &quot;In the thick of it&quot;">
       </div>
       <div class="form-field">
-        <label for="experienceAmount">Experience</label>
+        <label for="experienceAmount">Your experience (${escapeHtml(campaign.investigatorName)})</label>
         <input type="number" id="experienceAmount" name="experienceAmount" min="0" step="1" required>
       </div>
+      ${friendAmountFields(campaign)}
       <div class="form-field">
         <label for="notes">Notes</label>
         <textarea id="notes" name="notes" placeholder="Optional notes"></textarea>

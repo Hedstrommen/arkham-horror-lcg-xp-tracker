@@ -28,7 +28,8 @@ export class GainExperienceHandler {
       experienceType,
       experiencePoints,
       experienceTitle.toString(),
-      command.notes
+      command.notes,
+      command.friendAmounts
     );
     this.campaignRepository.save(campaign);
   }

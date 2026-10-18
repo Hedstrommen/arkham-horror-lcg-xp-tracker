@@ -5,4 +5,5 @@ export interface GainExperienceCommand {
   experienceAmount: number;
   experienceTitle: string;
   notes: string | null;
+  friendAmounts: Record<string, number>;
 }
