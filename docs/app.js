@@ -63,7 +63,8 @@ function loadCampaigns() {
 }
 
 function investigatorOptionsHtml(selectedId) {
-  return arkhamCatalog.investigators
+  return [...arkhamCatalog.investigators]
+    .sort((first, second) => first.investigatorName.localeCompare(second.investigatorName))
     .map((investigator) => `<option value="${escapeHtml(investigator.investigatorId)}" ${investigator.investigatorId === selectedId ? "selected" : ""}>${escapeHtml(investigator.investigatorName)} (${escapeHtml(investigator.factionName)})</option>`)
     .join("");
 }
@@ -522,6 +523,8 @@ function showCreateCampaign() {
     event.preventDefault();
     handleCreateCampaign();
   });
+  document.getElementById("friend-add-investigator").innerHTML =
+    `<option value="" selected>No investigator</option>${investigatorOptionsHtml(null)}`;
   initFriendEditor(document.getElementById("friend-edit-list"), []);
   document.getElementById("custom-campaign-checkbox").addEventListener("change", (event) => {
     const isCustom = event.target.checked;
