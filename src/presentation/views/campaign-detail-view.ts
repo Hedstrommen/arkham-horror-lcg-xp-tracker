@@ -180,7 +180,10 @@ function friendEditorScript(friends: Friend[], investigators: InvestigatorDefini
   return `
     <script>
       const friendEntries = ${JSON.stringify(friends)};
-      const ALL_INVESTIGATORS = ${JSON.stringify(investigators)};
+      const ALL_INVESTIGATORS = ${JSON.stringify(investigators)}
+        .sort(function (first, second) {
+          return first.investigatorName.localeCompare(second.investigatorName);
+        });
       const friendAddSelect = document.getElementById("friend-add-investigator");
       friendAddSelect.innerHTML = '<option value="" selected>No investigator</option>' + ALL_INVESTIGATORS
         .map(function (investigator) {

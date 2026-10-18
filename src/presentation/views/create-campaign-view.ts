@@ -81,7 +81,10 @@ export function renderCreateCampaignPage(
     </form>
     <script>
       const ALL_CAMPAIGNS = ${JSON.stringify(campaigns)};
-      const ALL_INVESTIGATORS = ${JSON.stringify(investigators)};
+      const ALL_INVESTIGATORS = ${JSON.stringify(investigators)}
+        .sort(function (first, second) {
+          return first.investigatorName.localeCompare(second.investigatorName);
+        });
       const friendEntries = [];
 
       function checkedChapters(prefix) {
