@@ -17,6 +17,19 @@ app.use(
   express.static(path.join(__dirname, "..", "..", "src", "presentation", "styles"))
 );
 app.use(
+  "/pwa",
+  express.static(path.join(__dirname, "..", "..", "src", "presentation", "pwa"), {
+    setHeaders: (response, filePath) => {
+      if (filePath.endsWith("manifest.webmanifest")) {
+        response.setHeader("Content-Type", "application/manifest+json");
+      }
+      if (filePath.endsWith("sw.js")) {
+        response.setHeader("Service-Worker-Allowed", "/");
+      }
+    },
+  })
+);
+app.use(
   createAuthRoutes(
     container.signUpHandler,
     container.signInHandler,

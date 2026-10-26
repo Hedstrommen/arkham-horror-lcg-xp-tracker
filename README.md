@@ -35,6 +35,7 @@ npm run dev
 - **Gain XP** page per campaign: record Scenario / Interlude / Card experience with an amount and optional notes. Your investigator's experience is required; each friend gets an optional amount in the same entry, and the campaign detail page shows a running total per friend.
 - **Mark finished / Reactivate** toggle per campaign (finished ones drop to the bottom and lose their Gain XP button).
 - **Export / Import** your data as a JSON file (client-side version) to move campaigns between devices or keep a backup.
+- **Installable app (PWA)**: install Arkham XP Tracker to your home screen or desktop from the browser (an "Install app" button appears on the overview when your browser supports it). The app works fully offline — the campaign catalog and app shell are cached by a service worker, and your campaigns live in your browser's localStorage.
 
 ## Getting started
 

@@ -41,6 +41,12 @@ function renderCampaignOptions() {
 
 document.addEventListener("DOMContentLoaded", startApp);
 
+document.addEventListener("arkham-install-available", () => {
+  if (selectedCampaignId === null) {
+    showOverview();
+  }
+});
+
 async function startApp() {
   campaigns = loadCampaigns();
   arkhamCatalog = await loadArkhamCatalog();
@@ -206,10 +212,14 @@ function showOverview() {
   });
 
   const campaignCards = sortedCampaigns.map(renderCampaignCard).join("");
+  const installButton = window.__arkhamInstallPrompt === undefined
+    ? ""
+    : '<button class="arkham-button subtle" id="install-app-button">Install app</button>';
   const content = `
     <div class="toolbar">
       <a class="arkham-button" href="#" id="create-campaign-link">Create new campaign</a>
       <span class="utility-group">
+        ${installButton}
         <button class="arkham-button subtle" id="export-data-button">Export</button>
         <label class="arkham-button subtle import-label">Import
           <input type="file" id="import-data-input" accept=".json,application/json" hidden>
@@ -227,6 +237,19 @@ function showOverview() {
     event.preventDefault();
     showCreateCampaign();
   });
+  const installAppButton = document.getElementById("install-app-button");
+  if (installAppButton !== null) {
+    installAppButton.addEventListener("click", async () => {
+      const installPrompt = window.__arkhamInstallPrompt;
+      if (installPrompt === undefined) {
+        return;
+      }
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      window.__arkhamInstallPrompt = undefined;
+      showOverview();
+    });
+  }
   document.getElementById("export-data-button").addEventListener("click", exportData);
   document.getElementById("import-data-input").addEventListener("change", importData);
   for (const campaign of campaigns) {
