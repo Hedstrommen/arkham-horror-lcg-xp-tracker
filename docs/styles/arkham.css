@@ -726,6 +726,11 @@ img.class-icon {
   color: var(--gold-bright);
 }
 
+.detail-friend-entry .experience-breakdown {
+  flex-basis: 100%;
+  margin: 0;
+}
+
 .friend-editor {
   border: 1px solid rgba(201, 162, 39, 0.3);
   border-radius: 3px;

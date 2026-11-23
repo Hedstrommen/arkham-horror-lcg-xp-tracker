@@ -30,6 +30,13 @@ function renderCampaignSigil(campaignName: string): string {
 
 function renderFriendLine(campaign: Campaign, friend: Friend): string {
   const totalXp = campaign.getFriendTotalExperience(friend.name);
+  const breakdownParts = Object.entries(campaign.getFriendExperienceBreakdownByKind(friend.name))
+    .filter(([, amount]) => amount > 0)
+    .map(([kind, amount]) => `${kind.charAt(0).toUpperCase() + kind.slice(1)}: ${amount}`)
+    .join(" &middot; ");
+  const breakdown = breakdownParts.length > 0
+    ? `<span class="experience-breakdown friend-breakdown">${breakdownParts}</span>`
+    : "";
   const faction = friend.investigatorFaction ?? "neutral";
   const investigator = friend.investigatorName === null
     ? '<span class="friend-no-investigator">no investigator</span>'
@@ -38,6 +45,7 @@ function renderFriendLine(campaign: Campaign, friend: Friend): string {
     <span class="friend-name">${escapeHtml(friend.name)}</span>
     <span class="friend-investigator">${investigator}</span>
     <span class="friend-total-xp">${totalXp} XP</span>
+    ${breakdown}
   </div>`;
 }
 
