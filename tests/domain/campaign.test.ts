@@ -49,6 +49,40 @@ describe("Campaign", () => {
     expect(campaign.getFriendTotalExperience("Lisa")).toBe(0);
   });
 
+  it("breaks down friend experience by kind", () => {
+    const campaign = buildCampaign();
+    campaign.gainExperience(
+      ExperienceType.fromUserInput("scenario"),
+      ExperiencePoints.fromUserInput(3),
+      "Scenario 1",
+      null,
+      { Sven: 3, Lisa: 2 }
+    );
+    campaign.gainExperience(
+      ExperienceType.fromUserInput("interlude"),
+      ExperiencePoints.fromUserInput(1),
+      "Interlude 1",
+      null,
+      { Sven: 1 }
+    );
+    campaign.gainExperience(
+      ExperienceType.fromUserInput("weakness"),
+      ExperiencePoints.fromUserInput(2),
+      "Amnesia",
+      null
+    );
+    expect(campaign.getFriendExperienceBreakdownByKind("Sven")).toEqual({
+      scenario: 3,
+      interlude: 1,
+      weakness: 0,
+    });
+    expect(campaign.getFriendExperienceBreakdownByKind("Lisa")).toEqual({
+      scenario: 2,
+      interlude: 0,
+      weakness: 0,
+    });
+  });
+
   it("rejects an empty title", () => {
     expect(() => CampaignTitle.fromUserInput("   ")).toThrow();
   });

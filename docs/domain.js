@@ -190,6 +190,19 @@ function getFriendTotalExperience(campaign, friendName) {
   );
 }
 
+function getFriendExperienceBreakdown(campaign, friendName) {
+  const totalsByKind = {};
+  for (const entry of campaign.experienceLog) {
+    const amount = entry.friendAmounts?.[friendName] ?? 0;
+    if (amount === 0) {
+      continue;
+    }
+    totalsByKind[entry.experienceKind] =
+      (totalsByKind[entry.experienceKind] ?? 0) + amount;
+  }
+  return totalsByKind;
+}
+
 function getExperienceBreakdown(campaign) {
   const totalsByKind = {};
   for (const entry of campaign.experienceLog) {

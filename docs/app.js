@@ -149,6 +149,11 @@ function readFriendEditor(listElement) {
 
 function renderFriendLine(campaign, friend) {
   const totalXp = getFriendTotalExperience(campaign, friend.name);
+  const breakdownParts = Object.entries(getFriendExperienceBreakdown(campaign, friend.name))
+    .map(([kind, amount]) => `${EXPERIENCE_DISPLAY_NAMES(kind)}: ${amount}`);
+  const breakdown = breakdownParts.length > 0
+    ? `<span class="experience-breakdown friend-breakdown">${breakdownParts.join(" &middot; ")}</span>`
+    : "";
   const investigator = friend.investigatorName === null
     ? '<span class="friend-no-investigator">no investigator</span>'
     : `<span class="investigator-name ${escapeHtml(friend.investigatorFaction)}">${escapeHtml(friend.investigatorName)}</span> ${renderClassIcon(friend.investigatorFaction)}`;
@@ -156,6 +161,7 @@ function renderFriendLine(campaign, friend) {
     <span class="friend-name">${escapeHtml(friend.name)}</span>
     <span class="friend-investigator">${investigator}</span>
     <span class="friend-total-xp">${totalXp} XP</span>
+    ${breakdown}
   </div>`;
 }
 
